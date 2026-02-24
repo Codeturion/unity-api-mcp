@@ -96,15 +96,34 @@ def insert_records(conn: sqlite3.Connection, records: list[dict]) -> int:
 
 def search(conn: sqlite3.Connection, query: str, n: int = 10,
            member_type: str | None = None) -> list[dict]:
-    """Full-text search with BM25 ranking."""
-    # Escape FTS5 special chars in query
+    """Full-text search with BM25 ranking + core namespace boosting.
+
+    Ranking combines:
+    - BM25 with column weights: member_name (10x) > class_name (5x) > fqn/summary (1x)
+    - Namespace depth penalty: deeper FQNs (more dots) rank lower, favoring core APIs
+      like UnityEngine.Object over UnityEngine.ResourceManagement.ResourceProviders
+    """
     clean = _escape_fts(query)
     if not clean.strip():
         return []
 
+    # BM25 column order: fqn, class_name, member_name, summary
+    # Adjustments (BM25 is negative; more negative = better):
+    #   - Namespace depth: +0.5 per dot in namespace → pushes niche APIs down
+    #   - Core bonus: -2 for root UnityEngine/UnityEditor, -1 for their sub-namespaces
+    #   - Type bonus: -1 for class/struct/enum defs (prefer types over same-named members)
+    ranking = """bm25(api_fts, 1.0, 5.0, 10.0, 0.5)
+                + (LENGTH(r.namespace) - LENGTH(REPLACE(r.namespace, '.', ''))) * 0.5
+                + CASE
+                    WHEN r.namespace IN ('UnityEngine', 'UnityEditor') THEN -2.0
+                    WHEN r.namespace LIKE 'UnityEngine.%' OR r.namespace LIKE 'UnityEditor.%' THEN -1.0
+                    ELSE 0.0
+                  END
+                + CASE WHEN r.member_type = 'type' THEN -1.0 ELSE 0.0 END"""
+
     if member_type:
-        sql = """
-            SELECT r.*, bm25(api_fts) AS rank
+        sql = f"""
+            SELECT r.*, {ranking} AS rank
             FROM api_fts f
             JOIN api_records r ON r.rowid = f.rowid
             WHERE api_fts MATCH ? AND r.member_type = ?
@@ -113,8 +132,8 @@ def search(conn: sqlite3.Connection, query: str, n: int = 10,
         """
         rows = conn.execute(sql, (clean, member_type, n)).fetchall()
     else:
-        sql = """
-            SELECT r.*, bm25(api_fts) AS rank
+        sql = f"""
+            SELECT r.*, {ranking} AS rank
             FROM api_fts f
             JOIN api_records r ON r.rowid = f.rowid
             WHERE api_fts MATCH ?
