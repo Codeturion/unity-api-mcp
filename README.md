@@ -1,4 +1,4 @@
-# unity-docs-mcp
+# unity-api-mcp
 
 Local MCP server that gives AI agents accurate Unity 6 API documentation. Prevents hallucinated method signatures, wrong namespaces, and deprecated API usage.
 
@@ -16,81 +16,29 @@ Works with Claude Code, Cursor, Windsurf, or any MCP-compatible AI tool.
 | `get_class_reference` | Full class reference card (all members) | "InputAction" → 31 methods/fields/properties |
 | `get_deprecation_warnings` | Check if an API is obsolete + get replacement | "WWW" → Use UnityWebRequest instead |
 
-**Coverage:** All UnityEngine/UnityEditor modules (~75K records), Input System, Addressables. Parsed from Unity's own XML IntelliSense files + package C# source docs.
+**Coverage:** All UnityEngine/UnityEditor modules (~75K records), Input System, Addressables. 78K total records ship pre-built — no ingestion step required.
 
 ## Requirements
 
 - Python 3.10+
-- Unity 6 installed (6000.x)
-- A Unity project (for package source parsing — optional)
+- That's it. The database ships pre-built. Unity does not need to be installed.
 
-## AI-Assisted Setup
+## Setup
 
-If an AI agent (Claude Code, etc.) is setting this up for you, give it these instructions:
-
-> Read the README at `<path>/unity-docs-mcp/README.md` and set up the MCP server. My Unity project is at `<project-path>`.
-
-The agent should:
-1. **Discover paths** — find Python (`python --version` or `python3 --version`), find Unity install (check `C:/Program Files/Unity/Hub/Editor/`, `/Applications/Unity/Hub/Editor/`, or `~/Unity/Hub/Editor/` for `6000.*` folders), and confirm the project path has `Library/PackageCache/`
-2. **Create venv and install** — `python -m venv venv && venv/Scripts/activate && pip install -e .` (Windows) or `source venv/bin/activate` (macOS/Linux)
-3. **Run ingestion** — `python -m unity_docs_mcp.ingest --project "<project-path>"` with `UNITY_INSTALL_PATH` set to the discovered Unity root. Verify output shows "records inserted"
-4. **Write MCP config** — add to `~/.claude/mcp.json` (or project `.mcp.json`) using the actual resolved paths for `command`, `cwd`, `PYTHONPATH`, `UNITY_INSTALL_PATH`, `UNITY_PROJECT_PATH`
-5. **Add CLAUDE.md instructions** — append the "Unity API Lookup" snippet from Step 5 below to the project's `CLAUDE.md` (create if needed)
-6. **Verify** — reconnect MCP (`/mcp` in Claude Code) and test: `get_namespace("SceneManager")` should return `using UnityEngine.SceneManagement;`
-
-## Manual Setup
-
-### 1. Clone and create virtual environment
+### 1. Install
 
 ```bash
-git clone <repo-url> unity-docs-mcp
-cd unity-docs-mcp
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-# macOS/Linux
-source venv/bin/activate
-
-pip install -e .
+pip install unity-api-mcp
 ```
 
-### 2. Run ingestion
-
-This parses Unity's XML docs and builds the SQLite database. Run once, then again when Unity is updated.
-
+Or install from source:
 ```bash
-# Basic — Unity engine APIs only
-python -m unity_docs_mcp.ingest
-
-# With package sources (Input System, Addressables)
-python -m unity_docs_mcp.ingest --project "path/to/your/unity/project"
+git clone <repo-url> unity-api-mcp
+cd unity-api-mcp
+pip install .
 ```
 
-If Unity isn't auto-detected, set the install path:
-
-```bash
-# Windows (Command Prompt)
-set UNITY_INSTALL_PATH=C:\Program Files\Unity\Hub\Editor\6000.3.8f1
-
-# Windows (PowerShell)
-$env:UNITY_INSTALL_PATH = "C:\Program Files\Unity\Hub\Editor\6000.3.8f1"
-
-# macOS/Linux
-export UNITY_INSTALL_PATH=/Applications/Unity/Hub/Editor/6000.3.8f1
-```
-
-You should see output like:
-```
-Found 2 top-level + 137 module XML files (139 total)
-...
-Parsing com.unity.inputsystem: 1929 members parsed
-Parsing com.unity.addressables: 1192 members parsed
-...
-77997 records inserted
-```
-
-### 3. Add to your AI tool
+### 2. Add to your AI tool
 
 #### Claude Code
 
@@ -100,15 +48,9 @@ Add to `~/.claude/mcp.json` (global) or `<project>/.mcp.json` (per-project):
 ```json
 {
   "mcpServers": {
-    "unity-docs": {
-      "command": "/path/to/unity-docs-mcp/venv/bin/python",
-      "args": ["-m", "unity_docs_mcp.server"],
-      "cwd": "/path/to/unity-docs-mcp",
-      "env": {
-        "PYTHONPATH": "/path/to/unity-docs-mcp/src",
-        "UNITY_INSTALL_PATH": "/Applications/Unity/Hub/Editor/6000.3.8f1",
-        "UNITY_PROJECT_PATH": "/path/to/your/unity/project"
-      }
+    "unity-api": {
+      "command": "unity-api-mcp",
+      "args": []
     }
   }
 }
@@ -118,15 +60,35 @@ Add to `~/.claude/mcp.json` (global) or `<project>/.mcp.json` (per-project):
 ```json
 {
   "mcpServers": {
-    "unity-docs": {
-      "command": "C:\\path\\to\\unity-docs-mcp\\venv\\Scripts\\python.exe",
-      "args": ["-m", "unity_docs_mcp.server"],
-      "cwd": "C:\\path\\to\\unity-docs-mcp",
-      "env": {
-        "PYTHONPATH": "C:\\path\\to\\unity-docs-mcp\\src",
-        "UNITY_INSTALL_PATH": "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.8f1",
-        "UNITY_PROJECT_PATH": "C:\\path\\to\\your\\unity\\project"
-      }
+    "unity-api": {
+      "command": "unity-api-mcp.exe",
+      "args": []
+    }
+  }
+}
+```
+
+If the command isn't found (not on PATH), use the full path to the script:
+
+**macOS / Linux:**
+```json
+{
+  "mcpServers": {
+    "unity-api": {
+      "command": "/path/to/venv/bin/unity-api-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+**Windows:**
+```json
+{
+  "mcpServers": {
+    "unity-api": {
+      "command": "C:\\path\\to\\venv\\Scripts\\unity-api-mcp.exe",
+      "args": []
     }
   }
 }
@@ -136,22 +98,24 @@ Add to `~/.claude/mcp.json` (global) or `<project>/.mcp.json` (per-project):
 
 Add the same config to your MCP settings file. The server uses stdio transport (default).
 
-### 4. Verify it's working
+### 3. Verify it's working
 
-Ask your AI: *"What namespace does SceneManager belong to?"*
+Restart your AI tool (or run `/mcp` in Claude Code to reconnect), then ask:
 
-If everything is connected, it should call `get_namespace("SceneManager")` and answer `using UnityEngine.SceneManagement;` with confidence. If it guesses without calling a tool, the MCP server isn't connected — check the config paths and restart your AI tool.
+*"What namespace does SceneManager belong to?"*
+
+If everything is connected, it should call `get_namespace("SceneManager")` and answer `using UnityEngine.SceneManagement;`. If it guesses without calling a tool, the MCP server isn't connected — check the config paths and restart.
 
 You can also try: *"Show me all methods on the Tilemap class"* — this should call `get_class_reference` and return 60+ methods.
 
-### 5. Tell your AI to use it
+### 4. Tell your AI to use it proactively
 
-Add the following to your project's `CLAUDE.md` (or equivalent instructions file):
+Add the following to your project's `CLAUDE.md` (or equivalent instructions file). **This step is important** — without it, the AI has the tools but won't know when to reach for them.
 
 ```markdown
-## Unity API Lookup (unity-docs MCP)
+## Unity API Lookup (unity-api MCP)
 
-Use the `unity-docs` MCP tools to verify Unity API usage instead of guessing. **Do not hallucinate signatures.**
+Use the `unity-api` MCP tools to verify Unity API usage instead of guessing. **Do not hallucinate signatures.**
 
 | When | Tool | Example |
 |------|------|---------|
@@ -168,41 +132,80 @@ Use the `unity-docs` MCP tools to verify Unity API usage instead of guessing. **
 - Does NOT cover: DOTween, VContainer, Newtonsoft.Json (third-party — rely on project source)
 ```
 
-This is **important** — without these instructions, the AI has the tools available but won't know when to use them proactively. The rules turn passive tools into an active workflow.
+## AI-Assisted Setup
 
-## Configuration
+If an AI agent (Claude Code, etc.) is setting this up for you, give it these instructions:
 
-| Environment Variable | Required | Description |
-|---|---|---|
-| `UNITY_INSTALL_PATH` | No (auto-detected) | Path to Unity 6 install root, e.g. `H:/Unity/6000.3.8f1` |
-| `UNITY_PROJECT_PATH` | No | Path to a Unity project for parsing package sources (Input System, Addressables) |
+> Read the README at `<path>/unity-api-mcp/README.md` and set up the MCP server for my Unity project at `<project-path>`.
 
-Auto-detection searches common install locations:
-- Windows: `C:/Program Files/Unity/Hub/Editor/6000.*`, `H:/Unity/6000.*`
-- macOS: `/Applications/Unity/Hub/Editor/6000.*`
-- Linux: `~/Unity/Hub/Editor/6000.*`
+The agent should:
+1. **Install** — `pip install unity-api-mcp` (or `pip install .` if cloned locally)
+2. **Find the executable** — run `which unity-api-mcp` (macOS/Linux) or `where unity-api-mcp` (Windows) to get the full path
+3. **Write MCP config** — add to `~/.claude/mcp.json` with `"command": "<full-path-to-unity-api-mcp>"`
+4. **Add CLAUDE.md instructions** — append the "Unity API Lookup" snippet from Step 4 above to the project's `CLAUDE.md`
+5. **Verify** — reconnect MCP (`/mcp` in Claude Code) and test: `get_namespace("SceneManager")` should return `using UnityEngine.SceneManagement;`
 
-## Data sources
+## Advanced: Rebuild or extend the database
 
-The server ingests documentation from two sources:
+The shipped database covers Unity 6 (6000.x) engine APIs + Input System + Addressables. If you need to:
+- **Update for a newer Unity version** — re-run ingestion
+- **Add more packages** (e.g. Cinemachine, TextMeshPro) — re-run with `--project`
+- **Match your exact package versions** — re-run with `--project`
 
-**1. XML IntelliSense files** (primary) — Ship with every Unity installation at `Editor/Data/Managed/`. Machine-readable, structured, complete. Covers all UnityEngine and UnityEditor APIs including per-module assemblies (Physics, Tilemaps, Animation, UI Toolkit, etc.).
+### Run ingestion
 
-**2. C# source doc comments** (packages) — Unity packages like Input System and Addressables ship as source code, not DLLs. The ingestion pipeline parses `///` XML doc comments directly from `.cs` files in your project's `Library/PackageCache/`.
+```bash
+# Activate venv first, then:
+
+# Engine APIs only (requires Unity 6 installed)
+python -m unity_api_mcp.ingest
+
+# Engine APIs + packages from your project
+python -m unity_api_mcp.ingest --project "/path/to/your/unity/project"
+```
+
+If Unity isn't auto-detected, set the install path:
+
+```bash
+# Windows (Command Prompt)
+set UNITY_INSTALL_PATH=C:\Program Files\Unity\Hub\Editor\6000.3.8f1
+
+# Windows (PowerShell)
+$env:UNITY_INSTALL_PATH = "C:\Program Files\Unity\Hub\Editor\6000.3.8f1"
+
+# macOS/Linux
+export UNITY_INSTALL_PATH=/Applications/Unity/Hub/Editor/6000.3.8f1
+```
+
+You can also add these to the MCP config `env` block so they're always available:
+
+```json
+"env": {
+  "PYTHONPATH": "...",
+  "UNITY_INSTALL_PATH": "...",
+  "UNITY_PROJECT_PATH": "..."
+}
+```
+
+### What ingestion parses
+
+**XML IntelliSense files** — Ship with every Unity installation at `Editor/Data/Managed/`. 139 XML files covering all UnityEngine and UnityEditor modules.
+
+**C# source doc comments** — Unity packages (Input System, Addressables, etc.) ship as source code in your project's `Library/PackageCache/`. The ingestion pipeline parses `///` XML doc comments from `.cs` files.
 
 ## Project structure
 
 ```
-unity-docs-mcp/
-├── src/unity_docs_mcp/
+unity-api-mcp/
+├── src/unity_api_mcp/
 │   ├── server.py          # MCP server — 5 tools
 │   ├── db.py              # SQLite + FTS5 database layer
 │   ├── xml_parser.py      # Parse Unity XML IntelliSense files
 │   ├── cs_doc_parser.py   # Parse C# doc comments from package source
 │   ├── unity_paths.py     # Locate Unity install + package dirs
-│   └── ingest.py          # CLI ingestion pipeline
-├── data/
-│   └── unity_docs.db      # SQLite database (generated by ingestion)
+│   ├── ingest.py          # CLI ingestion pipeline
+│   └── data/
+│       └── unity_docs.db  # Pre-built SQLite database (78K records, ships with package)
 ├── pyproject.toml
 └── .env.example
 ```
@@ -210,22 +213,20 @@ unity-docs-mcp/
 ## Troubleshooting
 
 **"No results found" for a query**
-- Run ingestion first: `python -m unity_docs_mcp.ingest`
-- Check that `data/unity_docs.db` exists and is non-empty
-- For Input System / Addressables: pass `--project` flag during ingestion
-
-**"Could not find Unity XML documentation files"**
-- Set `UNITY_INSTALL_PATH` to your Unity 6 install root
-- Verify the path contains `Editor/Data/Managed/UnityEngine.xml`
-
-**Third-party packages return no results**
-- DOTween, VContainer, Newtonsoft.Json are not indexed (third-party, not Unity packages)
-- Only Unity first-party packages with C# source in `Library/PackageCache/` are supported
+- The pre-built database should be included in the package. If missing, reinstall: `pip install --force-reinstall unity-api-mcp`
+- Or re-run ingestion to rebuild (see Advanced section)
 
 **Server won't start**
 - Check Python version: `python --version` (needs 3.10+)
-- Check dependencies: `pip install -e .` from the project root
-- Check `PYTHONPATH` points to the `src/` directory
+- Check the command path: run `which unity-api-mcp` (macOS/Linux) or `where unity-api-mcp` (Windows)
+- If not found, use the full path in your MCP config
+
+**Third-party packages return no results**
+- DOTween, VContainer, Newtonsoft.Json are not indexed (third-party, not Unity packages)
+- Only Unity first-party packages are supported via ingestion with `--project`
+
+**Want to add more packages**
+- Run `python -m unity_api_mcp.ingest --project "/path/to/project"` to parse all Unity packages in your project's `Library/PackageCache/`
 
 ## License
 
