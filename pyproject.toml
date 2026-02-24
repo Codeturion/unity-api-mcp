@@ -22,6 +22,7 @@ unity-api-mcp = "unity_api_mcp.server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/unity_api_mcp"]
+exclude = ["*.db-shm", "*.db-wal"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "src/unity_api_mcp/data/unity_docs.db" = "unity_api_mcp/data/unity_docs.db"
