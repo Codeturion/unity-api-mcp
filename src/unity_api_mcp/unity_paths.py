@@ -117,6 +117,10 @@ def find_package_source_dirs() -> dict[str, Path]:
         "com.unity.inputsystem",
         "com.unity.addressables",
         "com.unity.resourcemanager",
+        "com.unity.ugui",
+        "com.unity.textmeshpro",
+        "com.unity.ai.navigation",
+        "com.unity.netcode.gameobjects",
     ]
 
     project_path = os.environ.get("UNITY_PROJECT_PATH")

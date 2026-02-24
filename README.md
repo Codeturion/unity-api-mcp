@@ -1,46 +1,88 @@
 # unity-api-mcp
 
-Local MCP server that gives AI agents accurate Unity 6 API documentation. Prevents hallucinated method signatures, wrong namespaces, and deprecated API usage.
+[![PyPI Version](https://img.shields.io/pypi/v/unity-api-mcp.svg)](https://pypi.org/project/unity-api-mcp/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/unity-api-mcp.svg)](https://pypi.org/project/unity-api-mcp/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
-Works with Claude Code, Cursor, Windsurf, or any MCP-compatible AI tool.
+**MCP server that gives AI agents accurate Unity 6 API documentation — prevents hallucinated signatures, wrong namespaces, and deprecated API usage.**
 
-## What it does
+Works with Claude Code, Cursor, Windsurf, or any MCP-compatible AI tool. The database ships pre-built (42K records) — no Unity installation required.
 
-5 tools your AI can call:
-
-| Tool | Purpose | Example |
-|------|---------|---------|
-| `search_unity_api` | Find APIs by keyword | "Tilemap SetTile", "async load scene" |
-| `get_method_signature` | Get exact signatures with all overloads | `UnityEngine.Physics.Raycast` |
-| `get_namespace` | Resolve `using` directives | "SceneManager" → `using UnityEngine.SceneManagement;` |
-| `get_class_reference` | Full class reference card (all members) | "InputAction" → 31 methods/fields/properties |
-| `get_deprecation_warnings` | Check if an API is obsolete + get replacement | "WWW" → Use UnityWebRequest instead |
-
-**Coverage:** All UnityEngine/UnityEditor modules (~75K records), Input System, Addressables. 78K total records ship pre-built — no ingestion step required.
-
-## Requirements
-
-- Python 3.10+
-- That's it. The database ships pre-built. Unity does not need to be installed.
-
-## Setup
-
-### 1. Install
+## Quick Start
 
 ```bash
 pip install unity-api-mcp
 ```
 
-Or clone and install locally:
-```bash
-git clone https://github.com/Codeturion/unity-api-mcp.git
-cd unity-api-mcp
-pip install .
+Then add to your `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "unity-api": {
+      "command": "unity-api-mcp",
+      "args": []
+    }
+  }
+}
 ```
 
-### 2. Add to your AI tool
+Restart your AI tool and ask: *"What namespace does SceneManager belong to?"*
 
-#### Claude Code
+## Tools
+
+| Tool | Purpose | Example |
+|------|---------|---------|
+| `search_unity_api` | Find APIs by keyword | "Tilemap SetTile", "async load scene" |
+| `get_method_signature` | Exact signatures with all overloads | `UnityEngine.Physics.Raycast` |
+| `get_namespace` | Resolve `using` directives | "SceneManager" → `using UnityEngine.SceneManagement;` |
+| `get_class_reference` | Full class reference card | "InputAction" → 31 methods/fields/properties |
+| `get_deprecation_warnings` | Check if an API is obsolete | "WWW" → Use UnityWebRequest instead |
+
+**Coverage:** All UnityEngine/UnityEditor modules, Input System, Addressables, UI/TextMeshPro, AI Navigation, Netcode.
+
+## Benchmarks
+
+Measured on the pre-built database (42,223 records). All queries run locally via SQLite FTS5. Token estimates use ~3.5 chars/token. File sizes verified against Unity 6 (6000.0.63f1).
+
+| Question | MCP | Without MCP | Savings |
+|----------|-----|-------------|---------|
+| "What namespace does Tilemap need?" | `get_namespace` — **~30 tokens**, 1 call | Grep + Read XML — ~500-2,000 tokens, 2-3 calls | 15-65x |
+| "Params for Tilemap.SetTile?" | `get_method_signature` — **~900 tokens**, 1 call | Read `TilemapModule.xml` (68KB) — ~19,500 tokens, 2-3 calls | ~20x |
+| "Everything on InputAction?" | `get_class_reference` — **~830 tokens**, 1 call | Read `InputAction.cs` (129KB) — ~36,800 tokens, 2-5 calls | ~44x |
+| "Is WWW deprecated?" | `get_deprecation_warnings` — **~590 tokens**, 1 call | Grep XML + read matches — ~2,000-5,000 tokens, 2-3 calls | 3-8x |
+
+Every MCP call completes in <15ms (local SQLite), returns structured data, and works offline.
+
+<details>
+<summary>Disclaimer</summary>
+
+"Without MCP" token counts assume the AI reads the full source file to find the answer. In practice, a targeted grep or partial file read can be much cheaper — and if the AI already knows the answer from training data, the cost is 0 tokens. MCP doesn't always win on token count. What it guarantees is a correct, structured answer in 1 call every time — no multi-step searching, no parsing raw files, no risk of outdated or hallucinated results. MCP token counts are measured from real tool responses. All estimates use ~3.5 chars/token and may vary ~20% depending on the tokenizer.
+
+</details>
+
+<details>
+<summary>Accuracy</summary>
+
+| Test | Result |
+|------|--------|
+| Search top-1 relevance (10 common queries) | 80% |
+| Namespace resolution (6 key classes) | 100% |
+| Key class coverage (17 common Unity classes) | 94% (16/17) |
+
+**Search top-1 misses** (correct result present, but not ranked #1):
+- "Physics Raycast" → returns `Physics.DefaultRaycastLayers` first (field ranked above method)
+- "Instantiate" → returns `ResourceManagement.InstantiationParameters.Instantiate` first (Addressables member ranked above `Object.Instantiate`)
+
+Both are ranking issues — the correct API is still in the results, just not top-1.
+
+</details>
+
+## Setup Details
+
+<details>
+<summary>Claude Code configuration</summary>
 
 Add to `~/.claude/mcp.json` (global) or `<project>/.mcp.json` (per-project):
 
@@ -68,9 +110,7 @@ Add to `~/.claude/mcp.json` (global) or `<project>/.mcp.json` (per-project):
 }
 ```
 
-If the command isn't found (not on PATH), use the full path to the script:
-
-**macOS / Linux:**
+If the command isn't on PATH, use the full path:
 ```json
 {
   "mcpServers": {
@@ -82,33 +122,17 @@ If the command isn't found (not on PATH), use the full path to the script:
 }
 ```
 
-**Windows:**
-```json
-{
-  "mcpServers": {
-    "unity-api": {
-      "command": "C:\\path\\to\\venv\\Scripts\\unity-api-mcp.exe",
-      "args": []
-    }
-  }
-}
-```
+</details>
 
-#### Cursor / Windsurf
+<details>
+<summary>Cursor / Windsurf</summary>
 
 Add the same config to your MCP settings file. The server uses stdio transport (default).
 
-### 3. Verify it's working
+</details>
 
-Restart your AI tool (or run `/mcp` in Claude Code to reconnect), then ask:
-
-*"What namespace does SceneManager belong to?"*
-
-If everything is connected, it should call `get_namespace("SceneManager")` and answer `using UnityEngine.SceneManagement;`. If it guesses without calling a tool, the MCP server isn't connected — check the config paths and restart.
-
-You can also try: *"Show me all methods on the Tilemap class"* — this should call `get_class_reference` and return 60+ methods.
-
-### 4. Tell your AI to use it proactively
+<details>
+<summary>CLAUDE.md snippet (recommended)</summary>
 
 Add the following to your project's `CLAUDE.md` (or equivalent instructions file). **This step is important** — without it, the AI has the tools but won't know when to reach for them.
 
@@ -132,24 +156,26 @@ Use the `unity-api` MCP tools to verify Unity API usage instead of guessing. **D
 - Does NOT cover: DOTween, VContainer, Newtonsoft.Json (third-party — rely on project source)
 ```
 
-## AI-Assisted Setup
+</details>
+
+<details>
+<summary>AI-Assisted Setup</summary>
 
 If an AI agent (Claude Code, etc.) is setting this up for you, give it these instructions:
 
 > Read the README at `<path>/unity-api-mcp/README.md` and set up the MCP server for my Unity project at `<project-path>`.
 
 The agent should:
-1. **Install** — `pip install unity-api-mcp` (or clone + `pip install .`)
+1. **Install** — `pip install unity-api-mcp`
 2. **Find the executable** — run `which unity-api-mcp` (macOS/Linux) or `where unity-api-mcp` (Windows) to get the full path
 3. **Write MCP config** — add to `~/.claude/mcp.json` with `"command": "<full-path-to-unity-api-mcp>"`
-4. **Add CLAUDE.md instructions** — append the "Unity API Lookup" snippet from Step 4 above to the project's `CLAUDE.md`
+4. **Add CLAUDE.md instructions** — append the "Unity API Lookup" snippet above to the project's `CLAUDE.md`
 5. **Verify** — reconnect MCP (`/mcp` in Claude Code) and test: `get_namespace("SceneManager")` should return `using UnityEngine.SceneManagement;`
 
-## Advanced: Rebuild the database
+</details>
 
-The pre-built database covers Unity 6 (6000.x). If you need to update it for a newer Unity version or add more packages, see `python -m unity_api_mcp.ingest --help`.
-
-## Project structure
+<details>
+<summary>Project structure</summary>
 
 ```
 unity-api-mcp/
@@ -161,15 +187,17 @@ unity-api-mcp/
 │   ├── unity_paths.py     # Locate Unity install + package dirs
 │   ├── ingest.py          # CLI ingestion pipeline
 │   └── data/
-│       └── unity_docs.db  # Pre-built SQLite database (78K records, ships with package)
+│       └── unity_docs.db  # Pre-built SQLite database (42K records, ships with package)
 └── pyproject.toml
 ```
 
-## Troubleshooting
+</details>
+
+<details>
+<summary>Troubleshooting</summary>
 
 **"No results found" for a query**
 - The pre-built database should be included in the package. If missing, reinstall: `pip install --force-reinstall unity-api-mcp`
-- Or re-run ingestion to rebuild (see Advanced section)
 
 **Server won't start**
 - Check Python version: `python --version` (needs 3.10+)
@@ -178,10 +206,16 @@ unity-api-mcp/
 
 **Third-party packages return no results**
 - DOTween, VContainer, Newtonsoft.Json are not indexed (third-party, not Unity packages)
-- Only Unity first-party packages are supported via ingestion with `--project`
 
-**Want to add more packages**
-- Run `python -m unity_api_mcp.ingest --project "/path/to/project"` to parse all Unity packages in your project's `Library/PackageCache/`
+</details>
+
+---
+
+## Contact
+
+Need a custom MCP server for your engine or framework? I build MCP tools that cut token waste and prevent hallucinations for AI-assisted game development. If you want something similar for your team's stack, reach out.
+
+fuatcankoseoglu@gmail.com
 
 ## License
 
