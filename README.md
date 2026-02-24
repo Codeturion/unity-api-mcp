@@ -28,12 +28,12 @@ Works with Claude Code, Cursor, Windsurf, or any MCP-compatible AI tool.
 ### 1. Install
 
 ```bash
-pip install unity-api-mcp
+pip install git+https://github.com/Codeturion/unity-api-mcp.git
 ```
 
-Or install from source:
+Or clone and install locally:
 ```bash
-git clone <repo-url> unity-api-mcp
+git clone https://github.com/Codeturion/unity-api-mcp.git
 cd unity-api-mcp
 pip install .
 ```
@@ -139,7 +139,7 @@ If an AI agent (Claude Code, etc.) is setting this up for you, give it these ins
 > Read the README at `<path>/unity-api-mcp/README.md` and set up the MCP server for my Unity project at `<project-path>`.
 
 The agent should:
-1. **Install** — `pip install unity-api-mcp` (or `pip install .` if cloned locally)
+1. **Install** — `pip install git+https://github.com/Codeturion/unity-api-mcp.git` (or clone + `pip install .`)
 2. **Find the executable** — run `which unity-api-mcp` (macOS/Linux) or `where unity-api-mcp` (Windows) to get the full path
 3. **Write MCP config** — add to `~/.claude/mcp.json` with `"command": "<full-path-to-unity-api-mcp>"`
 4. **Add CLAUDE.md instructions** — append the "Unity API Lookup" snippet from Step 4 above to the project's `CLAUDE.md`
@@ -154,38 +154,30 @@ The shipped database covers Unity 6 (6000.x) engine APIs + Input System + Addres
 
 ### Run ingestion
 
-```bash
-# Activate venv first, then:
+Ingestion requires Unity 6 installed locally — it reads the XML IntelliSense files from the Unity installation directory.
 
-# Engine APIs only (requires Unity 6 installed)
+```bash
+# Engine APIs only
 python -m unity_api_mcp.ingest
 
-# Engine APIs + packages from your project
+# Engine APIs + packages from your Unity project
 python -m unity_api_mcp.ingest --project "/path/to/your/unity/project"
 ```
 
-If Unity isn't auto-detected, set the install path:
+The ingestion script auto-detects Unity installations in standard locations. If it can't find yours, set `UNITY_INSTALL_PATH` before running:
 
 ```bash
 # Windows (Command Prompt)
-set UNITY_INSTALL_PATH=C:\Program Files\Unity\Hub\Editor\6000.3.8f1
+set UNITY_INSTALL_PATH=C:\Program Files\Unity\Hub\Editor\6000.0.63f1
 
 # Windows (PowerShell)
-$env:UNITY_INSTALL_PATH = "C:\Program Files\Unity\Hub\Editor\6000.3.8f1"
+$env:UNITY_INSTALL_PATH = "C:\Program Files\Unity\Hub\Editor\6000.0.63f1"
 
 # macOS/Linux
-export UNITY_INSTALL_PATH=/Applications/Unity/Hub/Editor/6000.3.8f1
+export UNITY_INSTALL_PATH=/Applications/Unity/Hub/Editor/6000.0.63f1
 ```
 
-You can also add these to the MCP config `env` block so they're always available:
-
-```json
-"env": {
-  "PYTHONPATH": "...",
-  "UNITY_INSTALL_PATH": "...",
-  "UNITY_PROJECT_PATH": "..."
-}
-```
+> **Note:** These env vars are only for the ingestion step. The MCP server itself does not need Unity installed — it reads from the pre-built database.
 
 ### What ingestion parses
 
@@ -207,13 +199,13 @@ unity-api-mcp/
 │   └── data/
 │       └── unity_docs.db  # Pre-built SQLite database (78K records, ships with package)
 ├── pyproject.toml
-└── .env.example
+└── .env.example         # Optional — env vars for ingestion only
 ```
 
 ## Troubleshooting
 
 **"No results found" for a query**
-- The pre-built database should be included in the package. If missing, reinstall: `pip install --force-reinstall unity-api-mcp`
+- The pre-built database should be included in the package. If missing, reinstall: `pip install --force-reinstall git+https://github.com/Codeturion/unity-api-mcp.git`
 - Or re-run ingestion to rebuild (see Advanced section)
 
 **Server won't start**
