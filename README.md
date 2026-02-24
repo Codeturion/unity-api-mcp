@@ -145,45 +145,9 @@ The agent should:
 4. **Add CLAUDE.md instructions** — append the "Unity API Lookup" snippet from Step 4 above to the project's `CLAUDE.md`
 5. **Verify** — reconnect MCP (`/mcp` in Claude Code) and test: `get_namespace("SceneManager")` should return `using UnityEngine.SceneManagement;`
 
-## Advanced: Rebuild or extend the database
+## Advanced: Rebuild the database
 
-The shipped database covers Unity 6 (6000.x) engine APIs + Input System + Addressables. If you need to:
-- **Update for a newer Unity version** — re-run ingestion
-- **Add more packages** (e.g. Cinemachine, TextMeshPro) — re-run with `--project`
-- **Match your exact package versions** — re-run with `--project`
-
-### Run ingestion
-
-Ingestion requires Unity 6 installed locally — it reads the XML IntelliSense files from the Unity installation directory.
-
-```bash
-# Engine APIs only
-python -m unity_api_mcp.ingest
-
-# Engine APIs + packages from your Unity project
-python -m unity_api_mcp.ingest --project "/path/to/your/unity/project"
-```
-
-The ingestion script auto-detects Unity installations in standard locations. If it can't find yours, set `UNITY_INSTALL_PATH` before running:
-
-```bash
-# Windows (Command Prompt)
-set UNITY_INSTALL_PATH=C:\Program Files\Unity\Hub\Editor\6000.0.63f1
-
-# Windows (PowerShell)
-$env:UNITY_INSTALL_PATH = "C:\Program Files\Unity\Hub\Editor\6000.0.63f1"
-
-# macOS/Linux
-export UNITY_INSTALL_PATH=/Applications/Unity/Hub/Editor/6000.0.63f1
-```
-
-> **Note:** These env vars are only for the ingestion step. The MCP server itself does not need Unity installed — it reads from the pre-built database.
-
-### What ingestion parses
-
-**XML IntelliSense files** — Ship with every Unity installation at `Editor/Data/Managed/`. 139 XML files covering all UnityEngine and UnityEditor modules.
-
-**C# source doc comments** — Unity packages (Input System, Addressables, etc.) ship as source code in your project's `Library/PackageCache/`. The ingestion pipeline parses `///` XML doc comments from `.cs` files.
+The pre-built database covers Unity 6 (6000.x). If you need to update it for a newer Unity version or add more packages, see `python -m unity_api_mcp.ingest --help`.
 
 ## Project structure
 
@@ -198,8 +162,7 @@ unity-api-mcp/
 │   ├── ingest.py          # CLI ingestion pipeline
 │   └── data/
 │       └── unity_docs.db  # Pre-built SQLite database (78K records, ships with package)
-├── pyproject.toml
-└── .env.example         # Optional — env vars for ingestion only
+└── pyproject.toml
 ```
 
 ## Troubleshooting
