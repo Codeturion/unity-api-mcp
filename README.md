@@ -24,7 +24,21 @@ Works with Claude Code, Cursor, Windsurf, or any MCP-compatible AI tool.
 - Unity 6 installed (6000.x)
 - A Unity project (for package source parsing — optional)
 
-## Setup
+## AI-Assisted Setup
+
+If an AI agent (Claude Code, etc.) is setting this up for you, give it these instructions:
+
+> Read the README at `<path>/unity-docs-mcp/README.md` and set up the MCP server. My Unity project is at `<project-path>`.
+
+The agent should:
+1. **Discover paths** — find Python (`python --version` or `python3 --version`), find Unity install (check `C:/Program Files/Unity/Hub/Editor/`, `/Applications/Unity/Hub/Editor/`, or `~/Unity/Hub/Editor/` for `6000.*` folders), and confirm the project path has `Library/PackageCache/`
+2. **Create venv and install** — `python -m venv venv && venv/Scripts/activate && pip install -e .` (Windows) or `source venv/bin/activate` (macOS/Linux)
+3. **Run ingestion** — `python -m unity_docs_mcp.ingest --project "<project-path>"` with `UNITY_INSTALL_PATH` set to the discovered Unity root. Verify output shows "records inserted"
+4. **Write MCP config** — add to `~/.claude/mcp.json` (or project `.mcp.json`) using the actual resolved paths for `command`, `cwd`, `PYTHONPATH`, `UNITY_INSTALL_PATH`, `UNITY_PROJECT_PATH`
+5. **Add CLAUDE.md instructions** — append the "Unity API Lookup" snippet from Step 5 below to the project's `CLAUDE.md` (create if needed)
+6. **Verify** — reconnect MCP (`/mcp` in Claude Code) and test: `get_namespace("SceneManager")` should return `using UnityEngine.SceneManagement;`
+
+## Manual Setup
 
 ### 1. Clone and create virtual environment
 
