@@ -28,7 +28,7 @@ Works with Claude Code, Cursor, Windsurf, or any MCP-compatible AI tool.
 ### 1. Install
 
 ```bash
-pip install git+https://github.com/Codeturion/unity-api-mcp.git
+pip install unity-api-mcp
 ```
 
 Or clone and install locally:
@@ -139,7 +139,7 @@ If an AI agent (Claude Code, etc.) is setting this up for you, give it these ins
 > Read the README at `<path>/unity-api-mcp/README.md` and set up the MCP server for my Unity project at `<project-path>`.
 
 The agent should:
-1. **Install** — `pip install git+https://github.com/Codeturion/unity-api-mcp.git` (or clone + `pip install .`)
+1. **Install** — `pip install unity-api-mcp` (or clone + `pip install .`)
 2. **Find the executable** — run `which unity-api-mcp` (macOS/Linux) or `where unity-api-mcp` (Windows) to get the full path
 3. **Write MCP config** — add to `~/.claude/mcp.json` with `"command": "<full-path-to-unity-api-mcp>"`
 4. **Add CLAUDE.md instructions** — append the "Unity API Lookup" snippet from Step 4 above to the project's `CLAUDE.md`
@@ -168,7 +168,7 @@ unity-api-mcp/
 ## Troubleshooting
 
 **"No results found" for a query**
-- The pre-built database should be included in the package. If missing, reinstall: `pip install --force-reinstall git+https://github.com/Codeturion/unity-api-mcp.git`
+- The pre-built database should be included in the package. If missing, reinstall: `pip install --force-reinstall unity-api-mcp`
 - Or re-run ingestion to rebuild (see Advanced section)
 
 **Server won't start**
