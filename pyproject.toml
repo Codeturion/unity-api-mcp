@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "unity-docs-mcp"
+version = "0.1.0"
+description = "MCP server providing ground-truth Unity 6 API documentation from XML IntelliSense files"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.8.0",
+    "lxml>=5.0",
+    "python-dotenv>=1.0",
+]
+
+[project.scripts]
+unity-docs-mcp = "unity_docs_mcp.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/unity_docs_mcp"]
