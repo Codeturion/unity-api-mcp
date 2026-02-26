@@ -12,7 +12,7 @@ requires-python = ">=3.10"
 authors = [
     {name = "Codeturion", email = "fuatcankoseoglu@gmail.com"},
 ]
-keywords = ["mcp", "unity", "api", "documentation", "ai", "claude", "game-development"]
+keywords = ["mcp", "mcp-server", "model-context-protocol", "unity", "unity6", "unity2022", "unity2023", "api", "documentation", "ai", "claude", "cursor", "windsurf", "game-development"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
