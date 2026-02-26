@@ -5,9 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
-**MCP server that gives AI agents accurate Unity API documentation. Supports Unity 2022 LTS, 2023, and Unity 6. Prevents hallucinated signatures, wrong namespaces, and deprecated API usage.**
+**MCP server that gives AI agents accurate Unity API documentation. Prevents hallucinated signatures, wrong namespaces, and deprecated API usage.**
 
-Works with Claude Code, Cursor, Windsurf, or any MCP-compatible AI tool. Databases are downloaded on demand per Unity version. No Unity installation required.
+Supports **Unity 2022 LTS**, **2023**, and **Unity 6** with separate databases for each version. Works with Claude Code, Cursor, Windsurf, or any MCP-compatible AI tool. No Unity installation required.
 
 ## Quick Start
 
@@ -15,7 +15,7 @@ Works with Claude Code, Cursor, Windsurf, or any MCP-compatible AI tool. Databas
 pip install unity-api-mcp
 ```
 
-Then add to your `.mcp.json`:
+Then add to your `.mcp.json`, setting `UNITY_VERSION` to match your project:
 
 ```json
 {
@@ -24,28 +24,32 @@ Then add to your `.mcp.json`:
       "command": "unity-api-mcp",
       "args": [],
       "env": {
-        "UNITY_VERSION": "6"
+        "UNITY_VERSION": "2022"
       }
     }
   }
 }
 ```
 
-Set `UNITY_VERSION` to `"2022"`, `"2023"`, or `"6"` to match your project. On first run the server downloads the correct database (~27 MB) to `~/.unity-api-mcp/`.
+Valid values: `"2022"`, `"2023"`, or `"6"`.
 
-Restart your AI tool and ask: *"What namespace does SceneManager belong to?"*
+On first run the server downloads the correct database (~18-24 MB) to `~/.unity-api-mcp/`. Restart your AI tool and ask: *"What namespace does SceneManager belong to?"*
 
-## Version Detection
+## How It Works
 
-The server resolves which Unity version to serve in this order:
+1. **Version detection.** The server figures out which Unity version to serve:
 
 | Priority | Source | Example |
 |----------|--------|---------|
-| 1 | `UNITY_VERSION` env var | `UNITY_VERSION=2022` |
-| 2 | `UNITY_PROJECT_PATH` -> `ProjectSettings/ProjectVersion.txt` | Auto-detects `2022.3.62f1` -> `"2022"` |
-| 3 | Default | Falls back to `"6"` |
+| 1 | `UNITY_VERSION` env var | `"2022"`, `"6"`, or `"6000.3.8f1"` |
+| 2 | `UNITY_PROJECT_PATH` -> `ProjectSettings/ProjectVersion.txt` | Reads `2022.3.62f1`, maps to `"2022"` |
+| 3 | Default | `"6"` |
 
-You can also pass full version strings like `6000.3.8f1` or `2022.3.62f1`. They map automatically.
+2. **Database download.** If the database for that version isn't cached locally, it downloads from GitHub (~18-24 MB, one time).
+
+3. **Serve.** All tool calls query the version-specific SQLite database. Queries return in <15ms.
+
+Each version has its own database with the correct signatures, deprecation warnings, and member lists for that release.
 
 ## Tools
 
@@ -61,7 +65,7 @@ You can also pass full version strings like `6000.3.8f1` or `2022.3.62f1`. They 
 
 ## Benchmarks
 
-Measured on the pre-built database (42,223 records for Unity 6). All queries run locally via SQLite FTS5. Token estimates use ~3.5 chars/token.
+Measured on the Unity 6 database (42K records). Unity 2022 and 2023 databases are smaller (~32K records) but performance is the same. All queries run locally via SQLite FTS5. Token estimates use ~3.5 chars/token.
 
 | Question | MCP | Without MCP | Savings |
 |----------|-----|-------------|---------|
@@ -97,9 +101,9 @@ Ranking uses BM25 with tuned column weights (member name 10x, class name 5x) plu
 <details>
 <summary>Claude Code configuration</summary>
 
-Add to `~/.claude/mcp.json` (global) or `<project>/.mcp.json` (per-project):
+Add to `~/.claude/mcp.json` (global) or `<project>/.mcp.json` (per-project).
 
-**macOS / Linux:**
+**Set version explicitly** (recommended):
 ```json
 {
   "mcpServers": {
@@ -107,44 +111,16 @@ Add to `~/.claude/mcp.json` (global) or `<project>/.mcp.json` (per-project):
       "command": "unity-api-mcp",
       "args": [],
       "env": {
-        "UNITY_VERSION": "6"
+        "UNITY_VERSION": "2022"
       }
     }
   }
 }
 ```
 
-**Windows:**
-```json
-{
-  "mcpServers": {
-    "unity-api": {
-      "command": "unity-api-mcp.exe",
-      "args": [],
-      "env": {
-        "UNITY_VERSION": "6"
-      }
-    }
-  }
-}
-```
+On Windows, use `unity-api-mcp.exe`. If the command isn't on PATH, use the full path (e.g. `/path/to/venv/bin/unity-api-mcp`).
 
-If the command isn't on PATH, use the full path:
-```json
-{
-  "mcpServers": {
-    "unity-api": {
-      "command": "/path/to/venv/bin/unity-api-mcp",
-      "args": [],
-      "env": {
-        "UNITY_VERSION": "6"
-      }
-    }
-  }
-}
-```
-
-**Auto-detect from project path** (no `UNITY_VERSION` needed):
+**Auto-detect from project path** (reads `ProjectSettings/ProjectVersion.txt`):
 ```json
 {
   "mcpServers": {
@@ -265,8 +241,8 @@ Databases are stored in `~/.unity-api-mcp/` (downloaded on first run).
 <summary>Troubleshooting</summary>
 
 **"Could not download Unity X database"**
-- Check your internet connection. The server downloads ~27 MB on first run.
-- Build locally instead: `python -m unity_api_mcp.ingest --unity-version 6`
+- Check your internet connection. The server downloads ~18-24 MB on first run.
+- Build locally instead: `python -m unity_api_mcp.ingest --unity-version 2022`
 
 **Wrong API version being served**
 - Set `UNITY_VERSION` explicitly in your MCP config's `env` block.
