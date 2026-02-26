@@ -226,6 +226,10 @@ Databases are stored in `~/.unity-api-mcp/` (downloaded on first run).
 
 ---
 
+## See Also
+
+**[unreal-api-mcp](https://github.com/Codeturion/unreal-api-mcp)** — Same concept for Unreal Engine (C++). Covers UE 5.5, 5.6, and 5.7.
+
 ## Contact
 
 Need a custom MCP server for your engine or framework? I build MCP tools that cut token waste and prevent hallucinations for AI-assisted game development. If you want something similar for your team's stack, reach out.
