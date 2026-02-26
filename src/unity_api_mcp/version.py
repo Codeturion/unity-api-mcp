@@ -99,6 +99,7 @@ def ensure_db(version: str) -> Path:
     if cached.is_file():
         return cached
 
+    # Concurrent launches may download in parallel; atomic .tmp rename keeps it safe.
     # Try downloading from GitHub Release
     url = (
         f"https://github.com/{_REPO}/releases/download/"
