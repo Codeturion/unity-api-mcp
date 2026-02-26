@@ -2,6 +2,7 @@
 
 <!-- mcp-name: io.github.Codeturion/unity-api-mcp -->
 
+[![MCP Registry](https://img.shields.io/badge/MCP-Registry-blue)](https://registry.modelcontextprotocol.io/servers/io.github.Codeturion/unity-api-mcp)
 [![PyPI Version](https://img.shields.io/pypi/v/unity-api-mcp.svg)](https://pypi.org/project/unity-api-mcp/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/unity-api-mcp.svg)](https://pypi.org/project/unity-api-mcp/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
