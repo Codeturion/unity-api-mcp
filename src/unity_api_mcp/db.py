@@ -43,10 +43,16 @@ END;
 """
 
 
-def get_connection() -> sqlite3.Connection:
-    """Get a connection to the docs database."""
-    _DB_DIR.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(_DB_PATH))
+def get_connection(db_path: Path | None = None) -> sqlite3.Connection:
+    """Get a connection to the docs database.
+
+    Args:
+        db_path: Path to the SQLite database file. If None, uses the
+                 legacy bundled path (src/unity_api_mcp/data/unity_docs.db).
+    """
+    path = db_path or _DB_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(str(path))
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     return conn
