@@ -1,4 +1,5 @@
 venv/
+mcp-publisher.exe
 __pycache__/
 *.pyc
 .env
