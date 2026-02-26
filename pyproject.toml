@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "unity-api-mcp"
-version = "2.0.1"
+version = "2.0.2"
 description = "MCP server providing ground-truth Unity API documentation (2022/2023/6) -- prevents AI hallucination of signatures, namespaces, and deprecated APIs"
 readme = "README.md"
 license = {file = "LICENSE"}

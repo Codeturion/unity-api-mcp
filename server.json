@@ -3,7 +3,7 @@
   "name": "io.github.Codeturion/unity-api-mcp",
   "title": "Unity API Documentation",
   "description": "Accurate Unity API docs (2022/2023/6) for AI agents. Prevents hallucinated signatures.",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "repository": {
     "url": "https://github.com/Codeturion/unity-api-mcp",
     "source": "github"
@@ -12,7 +12,7 @@
     {
       "registryType": "pypi",
       "identifier": "unity-api-mcp",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "runtimeHint": "uvx",
       "transport": {
         "type": "stdio"
