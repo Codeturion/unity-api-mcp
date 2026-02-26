@@ -7,3 +7,6 @@ dist/
 build/
 /data/
 .idea
+.claude/settings.local.json
+CLAUDE.md
+ROADMAP.md
