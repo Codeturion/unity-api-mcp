@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "unity-api-mcp"
-version = "1.0.2"
-description = "MCP server providing ground-truth Unity 6 API documentation — prevents AI hallucination of signatures, namespaces, and deprecated APIs"
+version = "2.0.0"
+description = "MCP server providing ground-truth Unity API documentation (2022/2023/6) -- prevents AI hallucination of signatures, namespaces, and deprecated APIs"
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.10"
@@ -45,7 +45,4 @@ unity-api-mcp = "unity_api_mcp.server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/unity_api_mcp"]
-exclude = ["*.db-shm", "*.db-wal"]
-
-[tool.hatch.build.targets.wheel.force-include]
-"src/unity_api_mcp/data/unity_docs.db" = "unity_api_mcp/data/unity_docs.db"
+exclude = ["*.db", "*.db-shm", "*.db-wal"]

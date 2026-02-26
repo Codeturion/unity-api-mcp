@@ -30,13 +30,24 @@ _SEARCH_ROOTS = {
 _MANAGED_REL = Path("Editor/Data/Managed")
 _MODULES_REL = _MANAGED_REL / "UnityEngine"
 
+# Version prefix mapping for auto-detection in Hub/Editor directories
+_VERSION_PREFIXES = {
+    "6": "6000.",
+    "2023": "2023.",
+    "2022": "2022.",
+}
 
-def _find_unity_root() -> Path:
+
+def _find_unity_root(unity_version: str | None = None) -> Path:
     """Resolve the Unity install root directory.
 
     Search order:
     1. UNITY_INSTALL_PATH env var
-    2. Auto-detect by scanning common Hub/Editor directories for 6000.* folders
+    2. Auto-detect by scanning common Hub/Editor directories
+
+    Args:
+        unity_version: Target version ("2022", "2023", or "6"). If None,
+                       searches for any version (preferring newest).
     """
     env_path = os.environ.get("UNITY_INSTALL_PATH")
     if env_path:
@@ -48,35 +59,48 @@ def _find_unity_root() -> Path:
             f"UNITY_INSTALL_PATH={env_path} set but Managed dir not found at {managed}"
         )
 
+    # Build the list of prefixes to search for
+    if unity_version and unity_version in _VERSION_PREFIXES:
+        prefixes = [_VERSION_PREFIXES[unity_version]]
+    else:
+        # Search all versions, newest first
+        prefixes = list(_VERSION_PREFIXES.values())
+
     platform = sys.platform
     roots = _SEARCH_ROOTS.get(platform, [])
-    for root in roots:
-        if not root.exists():
-            continue
-        try:
-            for child in sorted(root.iterdir(), reverse=True):
-                if child.is_dir() and child.name.startswith("6000."):
-                    managed = child / _MANAGED_REL
-                    if managed.is_dir():
-                        return child
-        except PermissionError:
-            continue
+    for prefix in prefixes:
+        for root in roots:
+            if not root.exists():
+                continue
+            try:
+                for child in sorted(root.iterdir(), reverse=True):
+                    if child.is_dir() and child.name.startswith(prefix):
+                        managed = child / _MANAGED_REL
+                        if managed.is_dir():
+                            return child
+            except PermissionError:
+                continue
 
+    version_hint = f" {unity_version}" if unity_version else ""
     raise FileNotFoundError(
-        "Could not find Unity installation. "
+        f"Could not find Unity{version_hint} installation. "
         "Set UNITY_INSTALL_PATH env var to your Unity install root "
         "(e.g. H:/Unity/6000.3.8f1)"
     )
 
 
-def find_xml_paths() -> dict[str, Path]:
+def find_xml_paths(unity_version: str | None = None) -> dict[str, Path]:
     """Return a dict of {filename: Path} for ALL Unity XML doc files.
 
     Includes:
     - Top-level: UnityEngine.xml, UnityEditor.xml
     - Module XMLs: Editor/Data/Managed/UnityEngine/*.xml (137+ files)
+
+    Args:
+        unity_version: Target version ("2022", "2023", or "6"). Passed
+                       through to _find_unity_root() for install detection.
     """
-    unity_root = _find_unity_root()
+    unity_root = _find_unity_root(unity_version)
     managed = unity_root / _MANAGED_REL
     modules_dir = unity_root / _MODULES_REL
 
