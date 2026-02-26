@@ -140,7 +140,23 @@ On Windows, use `unity-api-mcp.exe`. If the command isn't on PATH, use the full 
 <details>
 <summary>Cursor / Windsurf</summary>
 
-Add the same config to your MCP settings file. The server uses stdio transport (default).
+Add to your MCP settings file (stdio transport):
+
+```json
+{
+  "mcpServers": {
+    "unity-api": {
+      "command": "unity-api-mcp",
+      "args": [],
+      "env": {
+        "UNITY_VERSION": "2022"
+      }
+    }
+  }
+}
+```
+
+Set `UNITY_VERSION` to `"2022"`, `"2023"`, or `"6"` to match your project.
 
 </details>
 
@@ -246,12 +262,16 @@ Databases are stored in `~/.unity-api-mcp/` (downloaded on first run).
 
 **Wrong API version being served**
 - Set `UNITY_VERSION` explicitly in your MCP config's `env` block.
-- Check the server startup log (stderr): `unity-api-mcp: serving Unity 6 API docs`
+- Check the server startup log (stderr): `unity-api-mcp: serving Unity <version> API docs`
 
 **Server won't start**
 - Check Python version: `python --version` (needs 3.10+)
 - Check the command path: run `which unity-api-mcp` (macOS/Linux) or `where unity-api-mcp` (Windows)
 - If not found, use the full path in your MCP config
+
+**No internet and no cached database**
+- Build locally from your Unity installation: `python -m unity_api_mcp.ingest --unity-version 2022 --unity-install "D:/Unity/2022.3.62f1"`
+- See "Building databases locally" section above.
 
 **Third-party packages return no results**
 - DOTween, VContainer, Newtonsoft.Json are not indexed (third-party, not Unity packages)
