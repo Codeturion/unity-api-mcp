@@ -1,16 +1,21 @@
-"""MCP server providing Unity 6 API documentation from XML IntelliSense files."""
+"""MCP server providing Unity API documentation from XML IntelliSense files."""
 
 import json
+import sys
 
 from mcp.server.fastmcp import FastMCP
 
 from . import db
+from .version import detect_version, ensure_db
+
+_unity_version = detect_version()
+print(f"unity-api-mcp: serving Unity {_unity_version} API docs", file=sys.stderr)
 
 mcp = FastMCP(
     "unity-api",
     instructions=(
-        "Unity 6 API documentation server. Use these tools to look up accurate "
-        "Unity API signatures, namespaces, and member details instead of guessing."
+        f"Unity {_unity_version} API documentation server. Use these tools to look up "
+        "accurate Unity API signatures, namespaces, and member details instead of guessing."
     ),
 )
 
@@ -20,7 +25,8 @@ _conn = None
 def _get_conn():
     global _conn
     if _conn is None:
-        _conn = db.get_connection()
+        db_path = ensure_db(_unity_version)
+        _conn = db.get_connection(db_path)
     return _conn
 
 
@@ -269,7 +275,7 @@ def get_class_reference(class_name: str) -> str:
 
 @mcp.tool()
 def get_deprecation_warnings(name: str) -> str:
-    """Check whether a Unity class, method, or property is deprecated in Unity 6, and find the replacement.
+    """Check whether a Unity class, method, or property is deprecated, and find the replacement.
 
     Use this before using any API you suspect might be outdated. Catches common mistakes
     like using FindObjectOfType (deprecated) instead of FindAnyObjectByType.
@@ -286,7 +292,7 @@ def get_deprecation_warnings(name: str) -> str:
     if record:
         if record.get("deprecated"):
             return _format_deprecation(record)
-        return f"'{name}' is NOT deprecated in Unity 6. Safe to use."
+        return f"'{name}' is NOT deprecated in Unity {_unity_version}. Safe to use."
 
     # Try searching deprecated records
     deprecated = db.search_deprecated(conn, name, n=10)
