@@ -6,6 +6,7 @@ __pycache__/
 dist/
 build/
 /data/
+src/unity_api_mcp/data/*.db
 .idea
 .claude/settings.local.json
 CLAUDE.md
