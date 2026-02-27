@@ -14,8 +14,9 @@ print(f"unity-api-mcp: serving Unity {_unity_version} API docs", file=sys.stderr
 mcp = FastMCP(
     "unity-api",
     instructions=(
-        f"Unity {_unity_version} API documentation server. Use these tools to look up "
-        "accurate Unity API signatures, namespaces, and member details instead of guessing."
+        f"Unity {_unity_version} API documentation server. When writing Unity API calls, "
+        "use these tools BEFORE guessing, Grep, or Read to verify signatures, namespaces, "
+        "and deprecation status. Do not hallucinate Unity API signatures."
     ),
 )
 
