@@ -2,9 +2,11 @@
 
 <!-- mcp-name: io.github.Codeturion/unity-api-mcp -->
 
-[![MCP Registry](https://img.shields.io/badge/MCP-Registry-blue)](https://registry.modelcontextprotocol.io/servers/io.github.Codeturion/unity-api-mcp)
 [![PyPI Version](https://img.shields.io/pypi/v/unity-api-mcp.svg)](https://pypi.org/project/unity-api-mcp/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/unity-api-mcp.svg)](https://pypi.org/project/unity-api-mcp/)
+[![MCP Registry](https://img.shields.io/badge/MCP-Registry-green)](https://registry.modelcontextprotocol.io/?q=unity-api-mcp)
+[![GitHub Stars](https://img.shields.io/github/stars/Codeturion/unity-api-mcp)](https://github.com/Codeturion/unity-api-mcp)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/Codeturion/unity-api-mcp)](https://github.com/Codeturion/unity-api-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
