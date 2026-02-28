@@ -7,7 +7,7 @@
 [![MCP Registry](https://img.shields.io/badge/MCP-Registry-green)](https://registry.modelcontextprotocol.io/?q=unity-api-mcp)
 [![GitHub Stars](https://img.shields.io/github/stars/Codeturion/unity-api-mcp)](https://github.com/Codeturion/unity-api-mcp)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/Codeturion/unity-api-mcp)](https://github.com/Codeturion/unity-api-mcp)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-blue.svg)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 **MCP server that gives AI agents accurate Unity API documentation. Prevents hallucinated signatures, wrong namespaces, and deprecated API usage.**
@@ -259,4 +259,4 @@ fuatcankoseoglu@gmail.com
 
 ## License
 
-MIT
+[PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0/) — free for personal and non-commercial use. For commercial licensing, contact fuatcankoseoglu@gmail.com.
