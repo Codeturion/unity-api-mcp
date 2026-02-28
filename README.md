@@ -16,18 +16,14 @@ Supports **Unity 2022 LTS**, **2023**, and **Unity 6** with separate databases f
 
 ## Quick Start
 
-```bash
-pip install unity-api-mcp
-```
-
 Add to your MCP config (`.mcp.json`, `mcp.json`, or your tool's MCP settings), setting `UNITY_VERSION` to match your project:
 
 ```json
 {
   "mcpServers": {
     "unity-api": {
-      "command": "unity-api-mcp",
-      "args": [],
+      "command": "uvx",
+      "args": ["unity-api-mcp"],
       "env": {
         "UNITY_VERSION": "2022"
       }
@@ -36,7 +32,7 @@ Add to your MCP config (`.mcp.json`, `mcp.json`, or your tool's MCP settings), s
 }
 ```
 
-Valid values: `"2022"`, `"2023"`, or `"6"`. On Windows, use `unity-api-mcp.exe`.
+Valid values: `"2022"`, `"2023"`, or `"6"`.
 
 On first run the server downloads the correct database (~18-24 MB) to `~/.unity-api-mcp/`.
 
@@ -146,10 +142,33 @@ Instead of setting `UNITY_VERSION`, you can point to your Unity project. The ser
 {
   "mcpServers": {
     "unity-api": {
+      "command": "uvx",
+      "args": ["unity-api-mcp"],
+      "env": {
+        "UNITY_PROJECT_PATH": "/path/to/your/unity-project"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Alternative installation methods</summary>
+
+**Using pip install:**
+```bash
+pip install unity-api-mcp
+```
+```json
+{
+  "mcpServers": {
+    "unity-api": {
       "command": "unity-api-mcp",
       "args": [],
       "env": {
-        "UNITY_PROJECT_PATH": "/path/to/your/unity-project"
+        "UNITY_VERSION": "2022"
       }
     }
   }
@@ -193,7 +212,7 @@ Databases are written to `~/.unity-api-mcp/unity_docs_{version}.db` by default.
 
 If an AI agent is setting this up for you:
 
-> Install `unity-api-mcp` via pip, add it to my MCP config with `UNITY_VERSION` set to match my project, append the CLAUDE.md snippet from the README, and verify with `get_namespace("SceneManager")`.
+> Add `unity-api-mcp` to my MCP config using `uvx` with `UNITY_VERSION` set to match my project, append the CLAUDE.md snippet from the README, and verify with `get_namespace("SceneManager")`.
 
 </details>
 
