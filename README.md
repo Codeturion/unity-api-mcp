@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/codeturion-unity-api-mcp-badge.png)](https://mseep.ai/app/codeturion-unity-api-mcp)
+
 # unity-api-mcp
 
 <!-- mcp-name: io.github.Codeturion/unity-api-mcp -->
