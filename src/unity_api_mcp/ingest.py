@@ -11,6 +11,7 @@ Options:
 
 import argparse
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -24,8 +25,7 @@ def main() -> None:
     parser.add_argument(
         "--unity-version",
         required=True,
-        choices=["2022", "2023", "6"],
-        help="Target Unity version (2022, 2023, or 6)",
+        help="Target Unity version: 2022, 2023, 6, or a Unity 6 stream like 6000.3",
     )
     parser.add_argument(
         "--unity-install",
@@ -43,6 +43,13 @@ def main() -> None:
     args = parser.parse_args()
 
     unity_version = args.unity_version
+    if unity_version not in ("2022", "2023", "6") and not re.match(
+        r"^6000\.\d+$", unity_version
+    ):
+        parser.error(
+            f"invalid --unity-version '{unity_version}' "
+            f"(expected 2022, 2023, 6, or 6000.<minor>)"
+        )
 
     # Push overrides into env so unity_paths can find them
     if args.unity_install:

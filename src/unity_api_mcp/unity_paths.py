@@ -1,6 +1,7 @@
 """Locate Unity XML IntelliSense files and package source directories on disk."""
 
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -26,9 +27,21 @@ _SEARCH_ROOTS = {
     ],
 }
 
-# Relative path from Unity install root to the Managed XML docs
-_MANAGED_REL = Path("Editor/Data/Managed")
-_MODULES_REL = _MANAGED_REL / "UnityEngine"
+# Relative paths from Unity install root to the Managed XML docs
+# (Windows/Linux layout first, then the macOS .app bundle layout)
+_MANAGED_REL_CANDIDATES = (
+    Path("Editor/Data/Managed"),
+    Path("Unity.app/Contents/Resources/Scripting/Managed"),
+)
+
+
+def _managed_dir(root: Path) -> Path | None:
+    """Return the Managed XML docs dir under *root*, or None if absent."""
+    for rel in _MANAGED_REL_CANDIDATES:
+        managed = root / rel
+        if managed.is_dir():
+            return managed
+    return None
 
 # Version prefix mapping for auto-detection in Hub/Editor directories
 _VERSION_PREFIXES = {
@@ -52,16 +65,19 @@ def _find_unity_root(unity_version: str | None = None) -> Path:
     env_path = os.environ.get("UNITY_INSTALL_PATH")
     if env_path:
         root = Path(env_path)
-        managed = root / _MANAGED_REL
-        if managed.is_dir():
+        if _managed_dir(root):
             return root
         raise FileNotFoundError(
-            f"UNITY_INSTALL_PATH={env_path} set but Managed dir not found at {managed}"
+            f"UNITY_INSTALL_PATH={env_path} set but no Managed dir found under it "
+            f"(tried: {', '.join(str(r) for r in _MANAGED_REL_CANDIDATES)})"
         )
 
     # Build the list of prefixes to search for
     if unity_version and unity_version in _VERSION_PREFIXES:
         prefixes = [_VERSION_PREFIXES[unity_version]]
+    elif unity_version and re.match(r"^6000\.\d+$", unity_version):
+        # Unity 6 minor stream, e.g. "6000.3" -> installs named 6000.3.*
+        prefixes = [unity_version + "."]
     else:
         # Search all versions, newest first
         prefixes = list(_VERSION_PREFIXES.values())
@@ -75,8 +91,7 @@ def _find_unity_root(unity_version: str | None = None) -> Path:
             try:
                 for child in sorted(root.iterdir(), reverse=True):
                     if child.is_dir() and child.name.startswith(prefix):
-                        managed = child / _MANAGED_REL
-                        if managed.is_dir():
+                        if _managed_dir(child):
                             return child
             except PermissionError:
                 continue
@@ -101,8 +116,10 @@ def find_xml_paths(unity_version: str | None = None) -> dict[str, Path]:
                        through to _find_unity_root() for install detection.
     """
     unity_root = _find_unity_root(unity_version)
-    managed = unity_root / _MANAGED_REL
-    modules_dir = unity_root / _MODULES_REL
+    managed = _managed_dir(unity_root)
+    if managed is None:
+        raise FileNotFoundError(f"No Managed dir found under {unity_root}")
+    modules_dir = managed / "UnityEngine"
 
     result = {}
 

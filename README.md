@@ -32,7 +32,7 @@ Add to your MCP config (`.mcp.json`, `mcp.json`, or your tool's MCP settings), s
 }
 ```
 
-Valid values: `"2022"`, `"2023"`, or `"6"`.
+Valid values: `"2022"`, `"2023"`, `"6"`, or a Unity 6 stream like `"6000.3"`.
 
 On first run the server downloads the correct database (~18-24 MB) to `~/.unity-api-mcp/`.
 
@@ -42,11 +42,11 @@ On first run the server downloads the correct database (~18-24 MB) to `~/.unity-
 
 | Priority | Source | Example |
 |----------|--------|---------|
-| 1 | `UNITY_VERSION` env var | `"2022"`, `"6"`, or `"6000.3.8f1"` |
-| 2 | `UNITY_PROJECT_PATH` | Reads `ProjectSettings/ProjectVersion.txt`, maps `2022.3.62f1` to `"2022"` |
+| 1 | `UNITY_VERSION` env var | `"2022"`, `"6"`, `"6000.3"`, or `"6000.3.8f1"` |
+| 2 | `UNITY_PROJECT_PATH` | Reads `ProjectSettings/ProjectVersion.txt`, maps `2022.3.62f1` to `"2022"`, `6000.3.8f1` to `"6000.3"` |
 | 3 | Default | `"6"` |
 
-2. **Database download.** If the database for that version isn't cached locally, it downloads from GitHub (one time).
+2. **Database download.** If the database for that version isn't cached locally, it downloads from GitHub. Unity 6 minor streams (`6000.0`, `6000.3`, `6000.5`, …) get their own per-stream database, falling back to the generic `6` database when a stream database isn't published. Cached databases are freshness-checked against the release on startup, so weekly rebuilds reach existing installs automatically.
 
 3. **Serve.** All tool calls query the version-specific SQLite database. Every query returns in <15ms.
 
@@ -70,7 +70,9 @@ All UnityEngine and UnityEditor modules, plus packages parsed from C# source: In
 |---------|---------|------------|---------|------|
 | Unity 2022 LTS | 32,000 | 442 | 86 XML + packages | 18 MB |
 | Unity 2023 | 31,387 | 436 | 92 XML | 18 MB |
-| Unity 6 | 42,223 | 516 | 139 XML + packages | 24 MB |
+| Unity 6 (per minor stream) | ~42,500 | ~516 | 139 XML + packages | 24 MB |
+
+Unity 6 databases are rebuilt automatically every week per active minor stream (see `.github/workflows/detect-unity-release.yml`), so new patch releases are covered within days.
 
 Does **not** cover third-party assets (DOTween, VContainer, Newtonsoft.Json). For those, rely on project source.
 

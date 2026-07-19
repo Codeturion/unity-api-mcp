@@ -1,0 +1,87 @@
+name: Detect New Unity Release
+
+on:
+  schedule:
+    - cron: "0 12 * * 1" # Every Monday at noon UTC
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+      actions: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Check for new Unity versions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Latest stable (f) release per active 6000.x minor stream.
+          # "Active" = appears in the last 100 releases with stream LTS or
+          # SUPPORTED — EOL minors stop showing up and stop being rebuilt.
+          api="https://services.api.unity.com/unity/editor/release/v1/releases"
+          releases=$(curl -sf "$api?limit=100&order=RELEASE_DATE_DESC")
+
+          active=$(echo "$releases" | jq -r '
+            .results[]
+            | select(.stream == "LTS" or .stream == "SUPPORTED")
+            | select(.version | test("^6000\\.[0-9]+\\.[0-9]+f[0-9]+$"))
+            | [.version, .shortRevision, .stream] | @tsv')
+
+          # Highest LTS minor owns the legacy unity_docs_6.db alias
+          default_lts=$(echo "$active" | awk '$3 == "LTS" {print $1}' \
+            | grep -oE '^6000\.[0-9]+' | sort -t. -k2 -n | tail -1)
+          echo "Default LTS stream: $default_lts"
+
+          new_builds=""
+          for minor in $(echo "$active" | grep -oE '^6000\.[0-9]+' | sort -Vu); do
+            # Latest patch for this minor (API is release-date ordered)
+            line=$(echo "$active" | awk -v m="$minor." 'index($1, m) == 1 {print; exit}')
+            version=$(echo "$line" | cut -f1)
+            changeset=$(echo "$line" | cut -f2)
+
+            built=$(gh release download db-v1 --pattern "built-${minor}.txt" \
+              --output - 2>/dev/null || echo "none")
+
+            if [ "$built" = "$version" ]; then
+              echo "  $minor: OK (built $built)"
+            else
+              echo "  $minor: NEW $version (built: $built) -- triggering build"
+              is_default="false"
+              [ "$minor" = "$default_lts" ] && is_default="true"
+              gh workflow run build-db.yml \
+                -f unity_version="$version" \
+                -f changeset="$changeset" \
+                -f minor="$minor" \
+                -f is_default_lts="$is_default"
+              new_builds="$new_builds $version"
+            fi
+          done
+
+          if [ -n "$new_builds" ]; then
+            version_list=$(echo "$new_builds" | tr ' ' '\n' | sed '/^$/d' | sort -V)
+            count=$(echo "$version_list" | wc -l)
+            formatted=$(echo "$version_list" | sed 's/^/- `/' | sed 's/$/`/')
+
+            gh issue create \
+              --title "Auto-building $count new Unity database(s)" \
+              --body "$(cat <<EOF
+          The weekly detect workflow found new Unity versions without databases.
+          Builds have been triggered on the buildmac runner.
+
+          **New versions:**
+          $formatted
+
+          **What to check after builds complete:**
+          - Confirm updated \`.db\` files in the \`db-v1\` release
+          - Spot-check record counts in the build logs
+          EOF
+            )"
+            echo "Created summary issue for $count new version(s)"
+          else
+            echo "No new versions found."
+          fi

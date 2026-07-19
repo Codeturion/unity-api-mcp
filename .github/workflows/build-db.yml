@@ -1,0 +1,157 @@
+name: Build Unity Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      unity_version:
+        description: "Full Unity version to build (e.g. 6000.3.20f1)"
+        required: true
+        type: string
+      changeset:
+        description: "Editor changeset hash (from the Unity Release API). Leave empty to auto-resolve."
+        required: false
+        type: string
+        default: ""
+      minor:
+        description: "Minor stream this build belongs to (e.g. 6000.3). Leave empty to derive from unity_version."
+        required: false
+        type: string
+        default: ""
+      is_default_lts:
+        description: "Also refresh the legacy unity_docs_6.db alias from this build"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    runs-on: [self-hosted, macOS, unity-mcp]
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    env:
+      UNITY_VERSION_IN: ${{ inputs.unity_version }}
+      CHANGESET_IN: ${{ inputs.changeset }}
+      MINOR_IN: ${{ inputs.minor }}
+      HUB: /Applications/Unity Hub.app/Contents/MacOS/Unity Hub
+      EDITOR_ROOT: /Applications/Unity/Hub/Editor
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Validate inputs
+        id: vars
+        run: |
+          if ! echo "$UNITY_VERSION_IN" | grep -qE '^6000\.[0-9]+\.[0-9]+f[0-9]+$'; then
+            echo "::error::unity_version '$UNITY_VERSION_IN' is not a stable 6000.x.yfZ version"
+            exit 1
+          fi
+          minor="$MINOR_IN"
+          [ -z "$minor" ] && minor=$(echo "$UNITY_VERSION_IN" | grep -oE '^6000\.[0-9]+')
+          if ! echo "$minor" | grep -qE '^6000\.[0-9]+$'; then
+            echo "::error::minor '$minor' invalid"; exit 1
+          fi
+          changeset="$CHANGESET_IN"
+          if [ -z "$changeset" ]; then
+            changeset=$(curl -sf "https://services.api.unity.com/unity/editor/release/v1/releases?limit=1&version=$UNITY_VERSION_IN" \
+              | jq -r '.results[0].shortRevision')
+          fi
+          if ! echo "$changeset" | grep -qE '^[0-9a-f]{12}$'; then
+            echo "::error::could not resolve changeset for $UNITY_VERSION_IN (got '$changeset')"
+            exit 1
+          fi
+          echo "minor=$minor" >> "$GITHUB_OUTPUT"
+          echo "changeset=$changeset" >> "$GITHUB_OUTPUT"
+          echo "Building $UNITY_VERSION_IN ($changeset) for stream $minor"
+
+      - name: Disk space guard
+        run: |
+          free_gb=$(df -g / | tail -1 | awk '{print $4}')
+          echo "Free disk: ${free_gb} GB"
+          if [ "$free_gb" -lt 20 ]; then
+            echo "::error::Only ${free_gb} GB free (need 20) — not installing an editor"
+            exit 1
+          fi
+
+      - name: Install Unity editor (if missing)
+        id: editor
+        run: |
+          dest="$EDITOR_ROOT/$UNITY_VERSION_IN"
+          if [ -d "$dest" ]; then
+            echo "Editor $UNITY_VERSION_IN already installed — reusing (will NOT uninstall)"
+            echo "installed_by_job=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Installing $UNITY_VERSION_IN (changeset ${{ steps.vars.outputs.changeset }}, no modules)…"
+            "$HUB" -- --headless install \
+              --version "$UNITY_VERSION_IN" \
+              --changeset "${{ steps.vars.outputs.changeset }}" | cat
+            [ -d "$dest/Unity.app" ] || { echo "::error::install failed — $dest/Unity.app missing"; exit 1; }
+            echo "installed_by_job=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "path=$dest" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve stub project packages
+        run: |
+          stub="$RUNNER_TEMP/stub"
+          rm -rf "$stub"
+          cp -R buildproject "$stub"
+          "${{ steps.editor.outputs.path }}/Unity.app/Contents/MacOS/Unity" \
+            -batchmode -quit -nographics \
+            -projectPath "$stub" \
+            -logFile "$RUNNER_TEMP/stub-resolve.log" || {
+              echo "::error::stub project resolve failed"; tail -50 "$RUNNER_TEMP/stub-resolve.log"; exit 1; }
+          ls "$stub/Library/PackageCache/" | sed 's/^/  /'
+
+      - name: Build database
+        run: |
+          uv venv --python 3.13 "$RUNNER_TEMP/venv"
+          uv pip install --python "$RUNNER_TEMP/venv/bin/python" . lxml
+          "$RUNNER_TEMP/venv/bin/python" -m unity_api_mcp.ingest \
+            --unity-version "${{ steps.vars.outputs.minor }}" \
+            --unity-install "${{ steps.editor.outputs.path }}" \
+            --project "$RUNNER_TEMP/stub" \
+            --output "$RUNNER_TEMP/unity_docs_${{ steps.vars.outputs.minor }}.db"
+
+      - name: Sanity check
+        run: |
+          db="$RUNNER_TEMP/unity_docs_${{ steps.vars.outputs.minor }}.db"
+          count=$("$RUNNER_TEMP/venv/bin/python" -c "
+          import sqlite3
+          print(sqlite3.connect('$db').execute('SELECT COUNT(*) FROM api_records').fetchone()[0])")
+          echo "Record count: $count  ($(du -h "$db" | cut -f1))"
+          if [ "$count" -lt 25000 ]; then
+            echo "::error::Suspiciously low record count ($count < 25000) — not uploading"
+            exit 1
+          fi
+
+      - name: Upload to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          minor="${{ steps.vars.outputs.minor }}"
+          db="$RUNNER_TEMP/unity_docs_${minor}.db"
+
+          gh release view db-v1 >/dev/null 2>&1 || \
+            gh release create db-v1 --title "Pre-built Databases" \
+              --notes "Pre-built SQLite databases per Unity version. Downloaded automatically on first run."
+
+          gh release upload db-v1 "$db" --clobber
+
+          echo "$UNITY_VERSION_IN" > "$RUNNER_TEMP/built-${minor}.txt"
+          gh release upload db-v1 "$RUNNER_TEMP/built-${minor}.txt" --clobber
+
+          if [ "${{ inputs.is_default_lts }}" = "true" ]; then
+            cp "$db" "$RUNNER_TEMP/unity_docs_6.db"
+            gh release upload db-v1 "$RUNNER_TEMP/unity_docs_6.db" --clobber
+            echo "Refreshed legacy unity_docs_6.db alias"
+          fi
+
+      - name: Uninstall temp editor
+        if: always() && steps.editor.outputs.installed_by_job == 'true'
+        run: |
+          rm -rf "$EDITOR_ROOT/$UNITY_VERSION_IN"
+          echo "Removed temp editor $UNITY_VERSION_IN"
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/stub" "$RUNNER_TEMP/venv"
