@@ -91,9 +91,12 @@ jobs:
               sleep 2
             fi
             echo "Installing $UNITY_VERSION_IN (changeset ${{ steps.vars.outputs.changeset }}, no modules)…"
+            # --architecture is REQUIRED: without it the "headless" CLI shows an
+            # interactive arch picker and hangs forever
             "$HUB" -- --headless install \
               --version "$UNITY_VERSION_IN" \
-              --changeset "${{ steps.vars.outputs.changeset }}" | cat
+              --changeset "${{ steps.vars.outputs.changeset }}" \
+              --architecture arm64 | cat
             [ -d "$dest/Unity.app" ] || { echo "::error::install failed — $dest/Unity.app missing"; exit 1; }
             echo "installed_by_job=true" >> "$GITHUB_OUTPUT"
           fi
