@@ -23,11 +23,17 @@ jobs:
           # Latest stable (f) release per active 6000.x minor stream.
           # "Active" = appears in the last 100 releases with stream LTS or
           # SUPPORTED — EOL minors stop showing up and stop being rebuilt.
+          # API caps page size at 25, so paginate.
           api="https://services.api.unity.com/unity/editor/release/v1/releases"
-          releases=$(curl -sf "$api?limit=100&order=RELEASE_DATE_DESC")
+          releases=""
+          for offset in 0 25 50 75; do
+            page=$(curl -sf "$api?limit=25&offset=$offset&order=RELEASE_DATE_DESC")
+            releases="$releases $page"
+          done
 
-          active=$(echo "$releases" | jq -r '
-            .results[]
+          active=$(echo "$releases" | jq -rs '
+            [.[] | .results[]]
+            | .[]
             | select(.stream == "LTS" or .stream == "SUPPORTED")
             | select(.version | test("^6000\\.[0-9]+\\.[0-9]+f[0-9]+$"))
             | [.version, .shortRevision, .stream] | @tsv')
