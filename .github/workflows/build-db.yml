@@ -81,6 +81,15 @@ jobs:
             echo "Editor $UNITY_VERSION_IN already installed — reusing (will NOT uninstall)"
             echo "installed_by_job=false" >> "$GITHUB_OUTPUT"
           else
+            # A running Hub GUI holds the profile lock and deadlocks headless
+            # installs (LevelDB error loop, no download) — quit it first.
+            if pgrep -x "Unity Hub" >/dev/null; then
+              echo "Quitting resident Unity Hub (holds profile lock)…"
+              osascript -e 'quit app "Unity Hub"' || true
+              sleep 5
+              pkill -x "Unity Hub" 2>/dev/null || true
+              sleep 2
+            fi
             echo "Installing $UNITY_VERSION_IN (changeset ${{ steps.vars.outputs.changeset }}, no modules)…"
             "$HUB" -- --headless install \
               --version "$UNITY_VERSION_IN" \
