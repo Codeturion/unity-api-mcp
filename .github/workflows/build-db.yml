@@ -158,6 +158,55 @@ jobs:
             echo "Refreshed legacy unity_docs_6.db alias"
           fi
 
+      - name: Update release description
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          assets=$(gh release view db-v1 --json assets -q '.assets[] | "\(.name)\t\(.size)\t\(.updatedAt)"')
+
+          table="| Unity version | Database | Built from | Size | Updated |"
+          table="$table
+          |---|---|---|---|---|"
+
+          # Unity 6 minor streams, newest first
+          for minor in $(echo "$assets" | grep -oE '^unity_docs_6000\.[0-9]+' \
+              | sed 's/unity_docs_//' | sort -t. -k2 -rn); do
+            row=$(echo "$assets" | grep "^unity_docs_${minor}.db"$'\t')
+            size_mb=$(( $(echo "$row" | cut -f2) / 1024 / 1024 ))
+            updated=$(echo "$row" | cut -f3 | cut -c1-10)
+            built=$(gh release download db-v1 --pattern "built-${minor}.txt" --output - 2>/dev/null || echo "?")
+            table="$table
+          | **Unity 6 ($minor)** | \`unity_docs_${minor}.db\` | $built | ${size_mb} MB | $updated |"
+          done
+
+          # Legacy rows
+          for v in 6 2023 2022; do
+            row=$(echo "$assets" | grep "^unity_docs_${v}.db"$'\t') || continue
+            size_mb=$(( $(echo "$row" | cut -f2) / 1024 / 1024 ))
+            updated=$(echo "$row" | cut -f3 | cut -c1-10)
+            case "$v" in
+              6) label="Unity 6 (default/fallback)"; note=$(gh release download db-v1 --pattern "built-6000.3.txt" --output - 2>/dev/null || echo "latest LTS");;
+              2023) label="Unity 2023"; note="2023.2 (EOL)";;
+              2022) label="Unity 2022 LTS"; note="2022.3 (EOL)";;
+            esac
+            table="$table
+          | $label | \`unity_docs_${v}.db\` | $note | ${size_mb} MB | $updated |"
+          done
+
+          updated_on=$(date -u +%Y-%m-%d)
+          gh release edit db-v1 --title "Pre-built Databases" --notes "$(cat <<EOF
+          Pre-built SQLite databases for Unity API documentation. The server downloads the right one automatically on first run and keeps it fresh via a startup check.
+
+          ## Supported Versions
+
+          $table
+
+          Set \`UNITY_VERSION\` to a stream (\`6000.3\`), a full version (\`6000.3.8f1\`), or a legacy value (\`6\`, \`2023\`, \`2022\`). Streams fall back to the \`6\` database when no per-stream database exists.
+
+          Unity 6 databases are rebuilt automatically when new patches ship (weekly detection). _Last update: $updated_on_
+          EOF
+          )"
+
       - name: Uninstall temp editor
         if: always() && steps.editor.outputs.installed_by_job == 'true'
         run: |
