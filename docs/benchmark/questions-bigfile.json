@@ -1,0 +1,50 @@
+[
+  {
+    "id": "keyboard-keycount-const",
+    "question": "In the Input System, what is Keyboard.KeyCount and what value does it hold? I want to know how many key controls a keyboard exposes.",
+    "difficulty": "bigfile",
+    "ground_truth": "Keyboard.KeyCount is a public const int documented as the total number of key controls on a keyboard, i.e. the number of controls in allKeys. It is defined as (int)Key.OEM5 (a code comment notes it was deliberately not updated to Key.F24 to avoid breaking the API).",
+    "evidence": ["Devices/Keyboard.cs:1064"],
+    "unity_apis": ["UnityEngine.InputSystem.Keyboard.KeyCount", "UnityEngine.InputSystem.Keyboard.allKeys"]
+  },
+  {
+    "id": "keyboard-key-indexer-exception",
+    "question": "If I look up a key on Keyboard.current using the indexer like keyboard[Key.A], what exception is thrown for an invalid key, and what is the indexer equivalent to?",
+    "difficulty": "bigfile",
+    "ground_truth": "Keyboard's KeyControl this[Key key] indexer looks up a key control by its key code and throws ArgumentOutOfRangeException when the given key is not valid. Its documentation states it is equivalent to allKeys[(int)key - 1].",
+    "evidence": ["Devices/Keyboard.cs:2360"],
+    "unity_apis": ["UnityEngine.InputSystem.Keyboard", "UnityEngine.InputSystem.Key", "UnityEngine.InputSystem.Controls.KeyControl"]
+  },
+  {
+    "id": "perform-interactive-rebinding-defaults",
+    "question": "When I call InputAction.PerformInteractiveRebinding(), what default timeout does it configure, and what happens if I pass a bindingIndex that points at a composite binding?",
+    "difficulty": "bigfile",
+    "ground_truth": "PerformInteractiveRebinding(this InputAction action, int bindingIndex = -1) returns a preconfigured RebindingOperation; its default timeout is set to 0.05f seconds via OnMatchWaitForAnother. It throws ArgumentNullException if action is null, ArgumentOutOfRangeException if bindingIndex is not valid, and InvalidOperationException if the binding at bindingIndex is a composite binding.",
+    "evidence": ["Actions/InputActionRebindingExtensions.cs:2749"],
+    "unity_apis": ["UnityEngine.InputSystem.InputActionRebindingExtensions.PerformInteractiveRebinding", "UnityEngine.InputSystem.InputActionRebindingExtensions.RebindingOperation"]
+  },
+  {
+    "id": "load-binding-overrides-json-removeexisting",
+    "question": "For LoadBindingOverridesFromJson on an action collection, what is the default value of the removeExisting parameter and what does that parameter control?",
+    "difficulty": "bigfile",
+    "ground_truth": "LoadBindingOverridesFromJson(this IInputActionCollection2 actions, string json, bool removeExisting = true) restores binding overrides from JSON, and removeExisting defaults to true. When true, all existing overrides on the collection's bindings are removed first; when false, existing overrides are left in place but may be overwritten by overrides in the JSON. It throws ArgumentNullException if actions is null.",
+    "evidence": ["Actions/InputActionRebindingExtensions.cs:1176"],
+    "unity_apis": ["UnityEngine.InputSystem.InputActionRebindingExtensions.LoadBindingOverridesFromJson"]
+  },
+  {
+    "id": "inputsystem-adddevice-generic",
+    "question": "What does InputSystem.AddDevice<TDevice>(string name = null) do about naming when name is null, and what exception can it throw?",
+    "difficulty": "bigfile",
+    "ground_truth": "AddDevice<TDevice>(string name = null) instantiates the layout registered for TDevice and adds it. If name is null, the layout's display name is used, and device names are automatically made unique by appending numbers (e.g. gamepad, gamepad1). It throws InvalidOperationException if instantiating the layout for TDevice did not produce a device of type TDevice.",
+    "evidence": ["InputSystem.cs:1409"],
+    "unity_apis": ["UnityEngine.InputSystem.InputSystem.AddDevice"]
+  },
+  {
+    "id": "inputsystem-removedevice-behavior",
+    "question": "If I call InputSystem.RemoveDevice on a device that is already removed, or on a null device, what happens?",
+    "difficulty": "bigfile",
+    "ground_truth": "RemoveDevice(InputDevice device) removes a device so it no longer receives input or appears in InputSystem.devices. If the device has already been removed (InputDevice.added is false), the method does nothing. It throws ArgumentNullException if device is null, and on successful removal triggers onDeviceChange with InputDeviceChange.Removed while automatically unbinding actions bound to the device.",
+    "evidence": ["InputSystem.cs:1525"],
+    "unity_apis": ["UnityEngine.InputSystem.InputSystem.RemoveDevice", "UnityEngine.InputSystem.InputDeviceChange.Removed"]
+  }
+]

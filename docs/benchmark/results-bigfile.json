@@ -1,0 +1,824 @@
+{
+  "keyboard-keycount-const": {
+    "mcp": {
+      "answer": "`Keyboard.KeyCount` is a `public const int` field on `UnityEngine.InputSystem.Keyboard` (namespace `UnityEngine.InputSystem`, package `com.unity.inputsystem`), defined in `InputSystem/Devices/Keyboard.cs` as `KeyCount = (int)Key.OEM5`. Counting the `UnityEngine.InputSystem.Key` enum from `Key.None` (0) up through `Key.OEM5` gives a value of **110** \u2014 the comment notes it's intentionally left pinned to `Key.OEM5` rather than the newer `Key.F24` to avoid an API break. It represents the total number of key `KeyControl`s exposed by a keyboard, i.e. the number of entries in `Keyboard.allKeys`.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Agent correctly identifies KeyCount as public const int = (int)Key.OEM5 matching allKeys count and the F24 comment, matching ground truth; the added numeric value 110 is an unverified but non-fabricated API detail."
+      },
+      "usage": {
+        "input_tokens": 22,
+        "cache_creation_input_tokens": 33570,
+        "cache_read_input_tokens": 414883,
+        "output_tokens": 3559,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 33570,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 1301,
+            "cache_read_input_tokens": 47182,
+            "cache_creation_input_tokens": 3918,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 3918
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 78639,
+      "session_overhead_tokens": 3920,
+      "research_tokens": 1301,
+      "num_turns": 11,
+      "duration_ms": 51660,
+      "cost_usd": 0.3793359
+    },
+    "skilled": {
+      "answer": "`UnityEngine.InputSystem.Keyboard.KeyCount` (in `InputSystem/Devices/Keyboard.cs:1069`) is a `public const int` defined as `(int)Key.OEM5`, currently evaluating to **83**. It represents the total number of key controls exposed on a keyboard \u2014 i.e., the count of entries in `Keyboard.allKeys` \u2014 and is intentionally kept at `Key.OEM5` rather than the newer `Key.F24` to avoid breaking the public API; the full extended range (including media keys) is tracked separately by the internal `Keyboard.ExtendedKeyCount = (int)Key.MediaForward`.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Agent correctly identifies KeyCount as public const int = (int)Key.OEM5, its purpose relative to allKeys, and the reason it wasn't updated to Key.F24, matching ground truth with accurate additional detail."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 7606,
+        "cache_read_input_tokens": 80509,
+        "output_tokens": 434,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 7606,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 225,
+            "cache_read_input_tokens": 28885,
+            "cache_creation_input_tokens": 1728,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1728
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 16096,
+      "session_overhead_tokens": 1730,
+      "research_tokens": 225,
+      "num_turns": 3,
+      "duration_ms": 8873,
+      "cost_usd": 0.0763167
+    },
+    "naive": {
+      "answer": "`Keyboard.KeyCount` is a `public const int` defined in `UnityEngine.InputSystem.Keyboard` (`InputSystem/Devices/Keyboard.cs:1069`), representing the total number of key controls exposed by a keyboard (i.e. the count of controls in `Keyboard.allKeys`). It's set to `(int)Key.OEM5` \u2014 per the enum `UnityEngine.InputSystem.LowLevel.Key` (or wherever `Key` is defined), this corresponds to the position of `Key.OEM5` in that enum. A code comment notes it was intentionally *not* updated to `Key.F24` when new keys were added, to avoid breaking the public API; the actual extended count (including newer keys up through media keys) is tracked separately by the internal constant `Keyboard.ExtendedKeyCount = (int)Key.MediaForward`.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Answer correctly identifies KeyCount as public const int = (int)Key.OEM5 matching allKeys count, with accurate context on the F24 comment, and the additional ExtendedKeyCount detail is plausible supplementary info not contradicted by ground truth."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 7713,
+        "cache_read_input_tokens": 80500,
+        "output_tokens": 527,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 7713,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 296,
+            "cache_read_input_tokens": 28891,
+            "cache_creation_input_tokens": 1829,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1829
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 16296,
+      "session_overhead_tokens": 1831,
+      "research_tokens": 296,
+      "num_turns": 3,
+      "duration_ms": 9773,
+      "cost_usd": 0.078351
+    }
+  },
+  "keyboard-key-indexer-exception": {
+    "mcp": {
+      "answer": "Found it directly in source (`InputSystem/Devices/Keyboard.cs:2368`).\n\n`UnityEngine.InputSystem.Keyboard`'s indexer `public KeyControl this[Key key]` throws `System.ArgumentOutOfRangeException` when the given `UnityEngine.InputSystem.Key` value is not valid (i.e., `(int)key - 1` falls outside the bounds of the internal keys array). Per the XML doc comment on the indexer, `keyboard[key]` is equivalent to `keyboard.allKeys[(int)key - 1]`, where `allKeys` is `Keyboard.allKeys` (a `ReadOnlyArray<KeyControl>`), and the returned value is a `UnityEngine.InputSystem.Controls.KeyControl`.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Agent correctly identifies ArgumentOutOfRangeException and the allKeys[(int)key - 1] equivalence, matching ground truth."
+      },
+      "usage": {
+        "input_tokens": 10,
+        "cache_creation_input_tokens": 9465,
+        "cache_read_input_tokens": 143705,
+        "output_tokens": 1204,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9465,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 272,
+            "cache_read_input_tokens": 31694,
+            "cache_creation_input_tokens": 778,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 778
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 25049,
+      "session_overhead_tokens": 780,
+      "research_tokens": 272,
+      "num_turns": 5,
+      "duration_ms": 18949,
+      "cost_usd": 0.1179915
+    },
+    "skilled": {
+      "answer": "`Keyboard.this[Key key]` (in `UnityEngine.InputSystem.Keyboard`, `UnityEngine.InputSystem` namespace) returns a `UnityEngine.InputSystem.Controls.KeyControl`. For an invalid `key`, it throws `System.ArgumentOutOfRangeException` (with a message naming the offending key). The indexer is documented and implemented as equivalent to `allKeys[(int)key - 1]`, where `allKeys` is `Keyboard.allKeys` (a `ReadOnlyArray<KeyControl>`) \u2014 see InputSystem/Devices/Keyboard.cs:2360-2379.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Matches ground truth exactly, including the exception type and the allKeys[(int)key - 1] equivalence, with accurate supporting API names."
+      },
+      "usage": {
+        "input_tokens": 10,
+        "cache_creation_input_tokens": 8102,
+        "cache_read_input_tokens": 140029,
+        "output_tokens": 628,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 8102,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 226,
+            "cache_read_input_tokens": 29907,
+            "cache_creation_input_tokens": 1202,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1202
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 22742,
+      "session_overhead_tokens": 1204,
+      "research_tokens": 226,
+      "num_turns": 5,
+      "duration_ms": 12614,
+      "cost_usd": 0.10007070000000001
+    },
+    "naive": {
+      "answer": "Found it in `InputSystem/Devices/Keyboard.cs:2368`.\n\nThe indexer `Keyboard.this[Key key]` (in `UnityEngine.InputSystem.Keyboard`, namespace `UnityEngine.InputSystem`) throws `System.ArgumentOutOfRangeException` when the computed index (`(int)key - 1`) falls outside the bounds of the internal `m_Keys` array \u2014 i.e., for an invalid `Key` value. Per its doc comment, `keyboard[Key.A]` is equivalent to `allKeys[(int)key - 1]`, where `allKeys` is `Keyboard.allKeys` (a `ReadOnlyArray<KeyControl>`).",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correctly identifies ArgumentOutOfRangeException and the allKeys[(int)key - 1] equivalence matching ground truth, with plausible additional implementation detail."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 8271,
+        "cache_read_input_tokens": 80553,
+        "output_tokens": 564,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 8271,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 244,
+            "cache_read_input_tokens": 28932,
+            "cache_creation_input_tokens": 2346,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2346
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 16896,
+      "session_overhead_tokens": 2348,
+      "research_tokens": 244,
+      "num_turns": 4,
+      "duration_ms": 10253,
+      "cost_usd": 0.08226989999999999
+    }
+  },
+  "perform-interactive-rebinding-defaults": {
+    "mcp": {
+      "answer": "No default timeout is configured \u2014 there's no `WithTimeout` call in `PerformInteractiveRebinding`, so the returned `RebindingOperation` has no timeout (0, i.e. disabled) unless you chain `.WithTimeout(...)` yourself. It does set `OnMatchWaitForAnother(0.05f)` as a match-confirmation delay, which is a different setting from timeout.\n\nIf `bindingIndex` points at a composite binding (`InputBinding.isComposite == true`), `InputActionRebindingExtensions.PerformInteractiveRebinding(this InputAction action, int bindingIndex = -1)` throws `System.InvalidOperationException` with message `\"Cannot perform rebinding on composite binding '{binding}' of '{action}'\"` (source: `InputSystem/Actions/InputActionRebindingExtensions.cs:2824-2826`, `UnityEngine.InputSystem.InputActionRebindingExtensions.RebindingOperation`) \u2014 you must target a composite's individual part bindings instead.",
+      "verdict": {
+        "verdict": "partial",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correctly identifies the composite-binding InvalidOperationException but incorrectly claims no default timeout is configured when the ground truth states the default timeout is set to 0.05f via OnMatchWaitForAnother."
+      },
+      "usage": {
+        "input_tokens": 12,
+        "cache_creation_input_tokens": 11887,
+        "cache_read_input_tokens": 176467,
+        "output_tokens": 1097,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11887,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 350,
+            "cache_read_input_tokens": 33898,
+            "cache_creation_input_tokens": 996,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 996
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 30642,
+      "session_overhead_tokens": 998,
+      "research_tokens": 350,
+      "num_turns": 6,
+      "duration_ms": 23891,
+      "cost_usd": 0.1407531
+    },
+    "skilled": {
+      "answer": "No timeout is set by `PerformInteractiveRebinding()` itself \u2014 it doesn't call `WithTimeout`, so `UnityEngine.InputSystem.InputActionRebindingExtensions.RebindingOperation.timeout` stays at its default of 0 (no timeout), meaning the operation waits indefinitely unless you explicitly chain `.WithTimeout(...)` (`InputActionRebindingExtensions.cs:1934`). It does configure other defaults instead: `OnMatchWaitForAnother(0.05f)`, exclusion of pointer/touchscreen position & delta and mouse click-count controls, event suppression on match, and (for non-button actions) cancellation via `<Keyboard>/escape`.\n\nIf `bindingIndex` (default `-1`) points at a composite binding (`action.bindings[bindingIndex].isComposite == true`), the method throws `System.InvalidOperationException` immediately (\"Cannot perform rebinding on composite binding ... of ...\") rather than starting the rebind \u2014 this check happens before `RebindingOperation.WithTargetBinding` is called (`InputActionRebindingExtensions.cs:2793-2832`).",
+      "verdict": {
+        "verdict": "wrong",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "The agent claims no default timeout is set (0/indefinite) when ground truth confirms OnMatchWaitForAnother sets a 0.05s timeout by default, misrepresenting the actual answer to the core question."
+      },
+      "usage": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 11749,
+        "cache_read_input_tokens": 114901,
+        "output_tokens": 1178,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11749,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 396,
+            "cache_read_input_tokens": 33671,
+            "cache_creation_input_tokens": 1085,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1085
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 24425,
+      "session_overhead_tokens": 1087,
+      "research_tokens": 396,
+      "num_turns": 4,
+      "duration_ms": 19572,
+      "cost_usd": 0.1226583
+    },
+    "naive": {
+      "answer": "`InputActionRebindingExtensions.PerformInteractiveRebinding(this InputAction action, int bindingIndex = -1)` in `InputSystem/Actions/InputActionRebindingExtensions.cs` does **not** set any timeout \u2014 `RebindingOperation.m_Timeout` defaults to `0`/unset, and per the doc comment on `RebindingOperation.WithTimeout` (\"By default, no timeout is set\"), the rebind will simply wait indefinitely unless you call `.WithTimeout(float timeInSeconds)` yourself. It does configure other defaults though: `OnMatchWaitForAnother(0.05f)`, exclusion of pointer/touchscreen position/delta and mouse click-count controls, `WithMatchingEventsBeingSuppressed()`, and (for non-button actions) `WithCancelingThrough(\"<Keyboard>/escape\")`.\n\nIf you pass a `bindingIndex` that refers to a composite binding (`action.bindings[bindingIndex].isComposite == true`), the method throws `System.InvalidOperationException(\"Cannot perform rebinding on composite binding '...' of '...'\")` immediately (line 2824-2826) \u2014 it will not start a rebind operation on the composite itself. (To rebind one part of a composite, you must target the part binding's own index, not the composite header index.)",
+      "verdict": {
+        "verdict": "wrong",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Agent correctly identified the composite binding exception but wrongly claimed no default timeout is set, when the ground truth states OnMatchWaitForAnother(0.05f) is itself the default timeout configuration."
+      },
+      "usage": {
+        "input_tokens": 10,
+        "cache_creation_input_tokens": 12272,
+        "cache_read_input_tokens": 147762,
+        "output_tokens": 1148,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 12272,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 451,
+            "cache_read_input_tokens": 34177,
+            "cache_creation_input_tokens": 1102,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1102
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 28206,
+      "session_overhead_tokens": 1104,
+      "research_tokens": 451,
+      "num_turns": 5,
+      "duration_ms": 21353,
+      "cost_usd": 0.1352106
+    }
+  },
+  "load-binding-overrides-json-removeexisting": {
+    "mcp": {
+      "answer": "For an action collection, the relevant overload is `UnityEngine.InputSystem.InputActionRebindingExtensions.LoadBindingOverridesFromJson(this IInputActionCollection2 actions, string json, bool removeExisting = true)` (source: `InputSystem/Actions/InputActionRebindingExtensions.cs:1201`; `IInputActionCollection2` is implemented by `InputActionAsset` and `InputActionMap`). `removeExisting` defaults to `true`, and when true it calls `actions.RemoveAllBindingOverrides()` before applying the overrides from the JSON \u2014 i.e. it controls whether existing binding overrides on the collection are cleared first (if `false`, the JSON overrides are merged on top of whatever overrides are already present).",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Matches ground truth on signature, default value true, and correctly describes clearing-vs-merging behavior."
+      },
+      "usage": {
+        "input_tokens": 18,
+        "cache_creation_input_tokens": 13530,
+        "cache_read_input_tokens": 266087,
+        "output_tokens": 1441,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 13530,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 261,
+            "cache_read_input_tokens": 31810,
+            "cache_creation_input_tokens": 4727,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 4727
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 41597,
+      "session_overhead_tokens": 4729,
+      "research_tokens": 261,
+      "num_turns": 9,
+      "duration_ms": 24530,
+      "cost_usd": 0.18267510000000003
+    },
+    "skilled": {
+      "answer": "`UnityEngine.InputSystem.InputActionRebindingExtensions.LoadBindingOverridesFromJson(this IInputActionCollection2 actions, string json, bool removeExisting = true)` defaults `removeExisting` to `true`. When `true`, it calls `IInputActionCollection2.RemoveAllBindingOverrides()` first, clearing all existing binding overrides on the action collection before applying the ones parsed from JSON; when `false`, existing overrides are left in place and only get overwritten if the incoming JSON contains an override for the same binding ID (found via `IInputActionCollection2.FindBinding`).",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Matches ground truth on default value and semantics of removeExisting, with plausible additional implementation detail consistent with Unity's known API surface."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 11041,
+        "cache_read_input_tokens": 81110,
+        "output_tokens": 530,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11041,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 214,
+            "cache_read_input_tokens": 29164,
+            "cache_creation_input_tokens": 4884,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 4884
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 19688,
+      "session_overhead_tokens": 4886,
+      "research_tokens": 214,
+      "num_turns": 3,
+      "duration_ms": 9548,
+      "cost_usd": 0.098547
+    },
+    "naive": {
+      "answer": "Confirmed. In `UnityEngine.InputSystem.InputActionRebindingExtensions.LoadBindingOverridesFromJson(this IInputActionCollection2 actions, string json, bool removeExisting = true)` (InputSystem/Actions/InputActionRebindingExtensions.cs:1201), the `removeExisting` parameter defaults to `true`.\n\nIt controls whether existing binding overrides are cleared before applying the JSON: when `true`, the method first calls `actions.RemoveAllBindingOverrides()` to strip all existing overrides from every binding in the `IInputActionCollection2`; when `false`, existing overrides are left in place and only overwritten where the loaded JSON specifies a new override for that binding.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Matches ground truth on default value and semantics of removeExisting, with plausible implementation detail (RemoveAllBindingOverrides call) consistent with described behavior."
+      },
+      "usage": {
+        "input_tokens": 12,
+        "cache_creation_input_tokens": 8668,
+        "cache_read_input_tokens": 171243,
+        "output_tokens": 1002,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 8668,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 248,
+            "cache_read_input_tokens": 30755,
+            "cache_creation_input_tokens": 920,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 920
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 26806,
+      "session_overhead_tokens": 922,
+      "research_tokens": 248,
+      "num_turns": 6,
+      "duration_ms": 16880,
+      "cost_usd": 0.1184469
+    }
+  },
+  "inputsystem-adddevice-generic": {
+    "mcp": {
+      "answer": "`UnityEngine.InputSystem.InputSystem.AddDevice<TDevice>(string name = null)` (in `InputSystem/InputSystem.cs:1434`) instantiates the `InputControlLayout` registered for `TDevice` via `InputManager.AddDevice(Type, string)`. When `name` is `null`, the device is named using the layout's display name (`InputControlLayout.displayName`) instead, and `InputManager` auto-uniquifies device names by appending an incrementing number (e.g. \"gamepad\", \"gamepad1\", \"gamepad2\"). The method throws `System.InvalidOperationException` if instantiating the layout for `TDevice` produces a device that isn't actually of type `TDevice` (e.g. because the layout was overridden) \u2014 in that case the just-created device is removed via `InputSystem.RemoveDevice` before the exception is thrown. On success it adds the device to `InputSystem.devices` and raises `InputSystem.onDeviceChange` with `InputDeviceChange.Added`.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Matches ground truth on naming behavior and the InvalidOperationException, with plausible additional implementation detail that doesn't contradict it."
+      },
+      "usage": {
+        "input_tokens": 18,
+        "cache_creation_input_tokens": 11505,
+        "cache_read_input_tokens": 274678,
+        "output_tokens": 1350,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11505,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 346,
+            "cache_read_input_tokens": 33119,
+            "cache_creation_input_tokens": 1393,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1393
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 40340,
+      "session_overhead_tokens": 1395,
+      "research_tokens": 346,
+      "num_turns": 9,
+      "duration_ms": 22309,
+      "cost_usd": 0.1717374
+    },
+    "skilled": {
+      "answer": "`UnityEngine.InputSystem.InputSystem.AddDevice<TDevice>(string name = null)` (in `InputSystem/InputSystem.cs:1434`) delegates to `InputManager.AddDevice(Type, string)`. If `name` is null, the device is named using the registered layout's display name (`UnityEngine.InputSystem.Layouts.InputControlLayout.displayName`), and the system automatically makes device names unique by appending an incrementing number (e.g. `\"gamepad\"`, `\"gamepad1\"`, `\"gamepad2\"`). It throws `System.InvalidOperationException` if instantiating the layout for `TDevice` doesn't produce a device of that exact type (e.g. because the layout was overridden) \u2014 in that case, the mis-typed device is first removed via `InputSystem.RemoveDevice` before the exception is thrown.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Matches ground truth on null-name behavior and the InvalidOperationException condition, with plausible additional implementation detail not contradicting known facts."
+      },
+      "usage": {
+        "input_tokens": 10,
+        "cache_creation_input_tokens": 9808,
+        "cache_read_input_tokens": 142300,
+        "output_tokens": 1272,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9808,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 291,
+            "cache_read_input_tokens": 31688,
+            "cache_creation_input_tokens": 1127,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1127
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 25320,
+      "session_overhead_tokens": 1129,
+      "research_tokens": 291,
+      "num_turns": 5,
+      "duration_ms": 24480,
+      "cost_usd": 0.120648
+    },
+    "naive": {
+      "answer": "I have enough to answer.\n\n**`InputSystem.AddDevice<TDevice>(string name = null)`** (`UnityEngine.InputSystem.InputSystem`, `InputSystem/InputSystem.cs:1434`) delegates to `InputManager.AddDevice(Type, string)` \u2192 `InputManager.AddDevice(string layout, string name = null, ...)` (`InputSystem/InputManager.cs:1196`).\n\n- **Naming when `name` is null:** `InputManager.AddDevice(string layout, string name, ...)` only overrides `device.m_Name` (`new InternedString(name)`) `if (!string.IsNullOrEmpty(name))`. When `name` is null, that assignment is skipped and the device keeps the default name assigned by `InputDevice.Build<InputDevice>(layout, variants)` (typically derived from the layout/type name), so it is not left null \u2014 it just isn't explicitly overridden.\n- **Exception thrown:** `InputSystem.AddDevice<TDevice>` itself throws `System.InvalidOperationException` if the created device is not actually an instance of `TDevice` (`\"Layout registered for type '...' did not produce a device of that type; layout probably has been overridden\"`), removing the mis-typed device first via `InputSystem.RemoveDevice`. Further up the call chain, `InputManager.AddDevice(Type, string)` throws `System.ArgumentNullException` if `type` is null, and `InputManager.AddDevice(string layout, ...)` throws `ArgumentNullException` if `layout` (derived from the type) is null/empty.",
+      "verdict": {
+        "verdict": "partial",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correctly identifies the InvalidOperationException but misses the key fact that names are made unique by appending numbers, instead describing generic default naming behavior."
+      },
+      "usage": {
+        "input_tokens": 14,
+        "cache_creation_input_tokens": 9432,
+        "cache_read_input_tokens": 204293,
+        "output_tokens": 2005,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9432,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 539,
+            "cache_read_input_tokens": 31451,
+            "cache_creation_input_tokens": 988,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 988
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 31880,
+      "session_overhead_tokens": 990,
+      "research_tokens": 539,
+      "num_turns": 7,
+      "duration_ms": 29907,
+      "cost_usd": 0.14799690000000001
+    }
+  },
+  "inputsystem-removedevice-behavior": {
+    "mcp": {
+      "answer": "I have what I need.\n\n**Null device:** `InputSystem.RemoveDevice(InputDevice device)` (namespace `UnityEngine.InputSystem`) forwards to `InputManager.RemoveDevice`, which throws `ArgumentNullException` (parameter name `device`) if `device == null` \u2014 confirmed both by the XML doc (`<exception cref=\"ArgumentNullException\">`) and the source at `InputSystem/InputManager.cs:1405-1406`.\n\n**Already-removed device:** `InputManager.RemoveDevice` checks `device.m_DeviceIndex == InputDevice.kInvalidDeviceIndex` (the sentinel value a device's index is set to once removed) and simply `return`s early if true (`InputManager.cs:1408-1410`) \u2014 no exception, no `InputSystem.onDeviceChange` event fires, and it's a silent no-op.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Agent correctly identifies the ArgumentNullException for null devices and silent no-op for already-removed devices, matching ground truth with real source citations."
+      },
+      "usage": {
+        "input_tokens": 20,
+        "cache_creation_input_tokens": 10873,
+        "cache_read_input_tokens": 300438,
+        "output_tokens": 2055,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 10873,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 299,
+            "cache_read_input_tokens": 32421,
+            "cache_creation_input_tokens": 1459,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1459
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 42991,
+      "session_overhead_tokens": 1461,
+      "research_tokens": 299,
+      "num_turns": 10,
+      "duration_ms": 36264,
+      "cost_usd": 0.18625440000000001
+    },
+    "skilled": {
+      "answer": "I have the exact behavior confirmed.\n\n`InputSystem.RemoveDevice(InputDevice device)` (Assembly-CSharp / `UnityEngine.InputSystem`, `InputSystem.cs:1537`) forwards directly to `InputManager.RemoveDevice(InputDevice device, bool keepOnListOfAvailableDevices = false)` (`InputSystem/InputManager.cs:1403`).\n\n- **Null device**: `InputManager.RemoveDevice` throws `System.ArgumentNullException` (`InputManager.cs:1405-1406`) \u2014 there's no null-check earlier in `InputSystem.RemoveDevice` itself, so the exception surfaces from the internal call.\n- **Already-removed device**: the method checks `device.m_DeviceIndex == InputDevice.kInvalidDeviceIndex` (`InputManager.cs:1409-1410`) and if true, silently returns \u2014 no exception, no `InputSystem.onDeviceChange` event, no-op.",
+      "verdict": {
+        "verdict": "partial",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correct on null-device ArgumentNullException and already-removed no-op behavior, but the specific line numbers and the claim of checking m_DeviceIndex==kInvalidDeviceIndex vs ground truth's InputDevice.added are unverifiable specifics that may be fabricated detail."
+      },
+      "usage": {
+        "input_tokens": 10,
+        "cache_creation_input_tokens": 10069,
+        "cache_read_input_tokens": 144360,
+        "output_tokens": 1274,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 10069,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 341,
+            "cache_read_input_tokens": 31316,
+            "cache_creation_input_tokens": 1760,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1760
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 25789,
+      "session_overhead_tokens": 1762,
+      "research_tokens": 341,
+      "num_turns": 5,
+      "duration_ms": 20587,
+      "cost_usd": 0.122862
+    },
+    "naive": {
+      "answer": "I have enough to answer.\n\n## Answer\n\n`InputSystem.RemoveDevice(InputDevice device)` (in `UnityEngine.InputSystem.InputSystem`, `InputSystem/InputSystem.cs:1537`) simply forwards to `InputManager.RemoveDevice(InputDevice device, bool keepOnListOfAvailableDevices = false)` (`InputSystem/InputManager.cs:1403`).\n\n- **Null device**: `InputManager.RemoveDevice` explicitly checks `if (device == null) throw new ArgumentNullException(nameof(device));` \u2014 so a `System.ArgumentNullException` is thrown.\n- **Already-removed device**: the method checks `if (device.m_DeviceIndex == InputDevice.kInvalidDeviceIndex) return;` \u2014 since a removed device's index was reset to `kInvalidDeviceIndex` on removal, calling `RemoveDevice` again is a silent no-op (no exception, no `InputDeviceChange.Removed` event fired again, `InputSystem.onDeviceChange` not invoked a second time).",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Agent correctly identifies ArgumentNullException on null and silent no-op on already-removed device, matching ground truth despite slightly different internal mechanism description (m_DeviceIndex check vs InputDevice.added)."
+      },
+      "usage": {
+        "input_tokens": 12,
+        "cache_creation_input_tokens": 9700,
+        "cache_read_input_tokens": 171940,
+        "output_tokens": 1020,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9700,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 372,
+            "cache_read_input_tokens": 31104,
+            "cache_creation_input_tokens": 1603,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1603
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 27926,
+      "session_overhead_tokens": 1605,
+      "research_tokens": 372,
+      "num_turns": 6,
+      "duration_ms": 16707,
+      "cost_usd": 0.125118
+    }
+  }
+}

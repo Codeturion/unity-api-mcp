@@ -7,6 +7,7 @@
 [![MCP Registry](https://img.shields.io/badge/MCP-Registry-green)](https://registry.modelcontextprotocol.io/?q=unity-api-mcp)
 [![GitHub Stars](https://img.shields.io/github/stars/Codeturion/unity-api-mcp)](https://github.com/Codeturion/unity-api-mcp)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/Codeturion/unity-api-mcp)](https://github.com/Codeturion/unity-api-mcp)
+[![Weekly DB Build](https://github.com/Codeturion/unity-api-mcp/actions/workflows/detect-unity-release.yml/badge.svg)](https://github.com/Codeturion/unity-api-mcp/actions/workflows/detect-unity-release.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
@@ -72,34 +73,30 @@ Does **not** cover third-party assets (DOTween, VContainer, Newtonsoft.Json). Fo
 
 ## Benchmarks
 
-In a 10-step research workflow, MCP uses **4x fewer tokens** than a skilled agent and **11x fewer** than a naive agent:
+Measured, not promised: 25 research questions across 3 testbeds, answered by 3 agent configs, every answer judged against ground truth verified in the source beforehand. The full harness lives in [`docs/benchmark/`](docs/benchmark/) and re-runs with one command.
 
-![Total Tokens - 10-Step Research Workflow](https://raw.githubusercontent.com/Codeturion/unity-api-mcp/master/docs/images/01-total-tokens.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Codeturion/unity-api-mcp/master/docs/images/benchmark-accuracy-dark.png">
+  <img alt="Answer quality by agent config, judged against verified ground truth" src="https://raw.githubusercontent.com/Codeturion/unity-api-mcp/master/docs/images/benchmark-accuracy-light.png">
+</picture>
 
-The gap holds across every question type. MCP wins on simple lookups and complex multi-part research alike:
+| Config | Correct | Partial | Wrong | Hallucinated APIs |
+|---|---|---|---|---|
+| **MCP + targeted Read** | **24/25** | 1 | 0 | **0** |
+| Skilled (Grep+Read) | 20/25 | 3 | 2 | 1 |
+| Naive (full Reads) | 19/25 | 3 | 3 | 1 |
 
-![Hallucination Risk: Grep+Read vs MCP](https://raw.githubusercontent.com/Codeturion/unity-api-mcp/master/docs/images/04-hallucination.png)
+The one reproduced hallucination is instructive. Asked to list the overloads of `SceneManager.LoadSceneAsync`, both non-MCP agents invented single-parameter `LoadSceneAsync(string)` and `LoadSceneAsync(int)` overloads that do not exist. Code written against them does not compile. The MCP agent returned the exact four real overloads.
 
-Even in a realistic hybrid workflow where MCP results are followed up with targeted file reads, it still uses **54% fewer tokens** than a skilled agent working without MCP:
-
-![Realistic Workflow: MCP + Targeted Read](https://raw.githubusercontent.com/Codeturion/unity-api-mcp/master/docs/images/03-hybrid.png)
-
-"Without MCP" estimates assume full file reads. A skilled agent with good tooling may use fewer tokens than shown. What MCP guarantees is a correct, structured answer in 1 call every time.
-
-### Per-question breakdown
-
-![Token Cost Per Question](https://raw.githubusercontent.com/Codeturion/unity-api-mcp/master/docs/images/02-per-step.png)
+Why correctness and not token savings? Agentic tools are good at code search now. Claude Code has shipped a Grep tool from the start, and current models search first and then read a narrow line range, so raw token use was comparable across all configs in our runs. But exact overloads, namespaces, and deprecations are not in your project files at all. An agent without MCP can only infer them from usage examples, and when it infers wrong you pay with a broken build.
 
 <details>
-<summary>Accuracy</summary>
+<summary>Methodology</summary>
 
-| Test | Result |
-|------|--------|
-| Search top-1 relevance (12 common queries) | 100% |
-| Namespace resolution (6 key classes) | 100% |
-| Key class coverage (17 common Unity classes) | 94% (16/17) |
-
-Ranking uses BM25 with tuned column weights (member name 10x, class name 5x) plus core namespace boosting to ensure `Object.Instantiate` ranks above niche APIs like `InstantiationParameters.Instantiate`.
+- 3 testbeds: a real Unity 6 game project (11 questions), pure Unity API lookups (8), and Unity Input System package source with 2,700 to 4,600 line files (6)
+- 3 configs, same model and turn limit: MCP tools + Grep/Read, Grep/Read only, Read only
+- Ground truth verified by reading the source before any runs; answers judged by a separate model session against that ground truth; token usage taken from API usage fields
+- Run it yourself: `python docs/benchmark/run.py --project <unity-project-path>` (results from July 2026; agent behavior moves, so re-run before quoting)
 
 </details>
 

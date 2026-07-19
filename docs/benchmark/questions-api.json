@@ -1,0 +1,66 @@
+[
+  {
+    "id": "api-screenpointtoray-overloads",
+    "question": "Exactly how many overloads does UnityEngine.Camera.ScreenPointToRay have in Unity 6, and what are their full parameter lists?",
+    "difficulty": "api",
+    "ground_truth": "Two overloads: ScreenPointToRay(Vector3 pos) and ScreenPointToRay(Vector3 pos, Camera.MonoOrStereoscopicEye eye). The second, stereo-aware overload is commonly missed.",
+    "evidence": ["unity_docs_6000.3.db api_records"],
+    "unity_apis": ["UnityEngine.Camera.ScreenPointToRay"]
+  },
+  {
+    "id": "api-raycast-ray-full-overload",
+    "question": "What is the full parameter list of the most complete UnityEngine.Physics.Raycast overload that takes a Ray and outputs a RaycastHit?",
+    "difficulty": "api",
+    "ground_truth": "Physics.Raycast(Ray ray, out RaycastHit hitInfo, float maxDistance, int layerMask, QueryTriggerInteraction queryTriggerInteraction), returning bool.",
+    "evidence": ["unity_docs_6000.3.db api_records"],
+    "unity_apis": ["UnityEngine.Physics.Raycast"]
+  },
+  {
+    "id": "api-loadsceneasync-overloads",
+    "question": "List all overloads of UnityEngine.SceneManagement.SceneManager.LoadSceneAsync in Unity 6, including parameter types.",
+    "difficulty": "api",
+    "ground_truth": "Four overloads: LoadSceneAsync(string sceneName, LoadSceneMode mode), LoadSceneAsync(int sceneBuildIndex, LoadSceneMode mode), LoadSceneAsync(string sceneName, LoadSceneParameters parameters), LoadSceneAsync(int sceneBuildIndex, LoadSceneParameters parameters). The LoadSceneParameters variants are commonly missed.",
+    "evidence": ["unity_docs_6000.3.db api_records"],
+    "unity_apis": ["UnityEngine.SceneManagement.SceneManager.LoadSceneAsync"]
+  },
+  {
+    "id": "api-screenpoint-rect-params",
+    "question": "What is the exact signature of UnityEngine.RectTransformUtility.ScreenPointToLocalPointInRectangle, including its out parameter and return type?",
+    "difficulty": "api",
+    "ground_truth": "bool ScreenPointToLocalPointInRectangle(RectTransform rect, Vector2 screenPoint, Camera cam, out Vector2 localPoint). Returns true if the plane of the RectTransform is hit.",
+    "evidence": ["unity_docs_6000.3.db api_records"],
+    "unity_apis": ["UnityEngine.RectTransformUtility.ScreenPointToLocalPointInRectangle"]
+  },
+  {
+    "id": "api-audiosource-panlevel-deprecated",
+    "question": "Is UnityEngine.AudioSource.panLevel usable in Unity 6? If not, what replaces it?",
+    "difficulty": "api",
+    "ground_truth": "AudioSource.panLevel is deprecated/obsolete in Unity 6. The replacement is AudioSource.spatialBlend. (AudioSource.pan is likewise replaced by panStereo.)",
+    "evidence": ["unity_docs_6000.3.db api_records deprecated=1"],
+    "unity_apis": ["UnityEngine.AudioSource.panLevel", "UnityEngine.AudioSource.spatialBlend"]
+  },
+  {
+    "id": "api-movietexture-replacement",
+    "question": "A legacy script uses UnityEngine.MovieTexture. Does it still exist in Unity 6, and what is the recommended replacement API?",
+    "difficulty": "api",
+    "ground_truth": "MovieTexture is deprecated/removed in Unity 6; the recommended replacement is the VideoPlayer component (UnityEngine.Video.VideoPlayer).",
+    "evidence": ["unity_docs_6000.3.db api_records deprecated=1"],
+    "unity_apis": ["UnityEngine.MovieTexture", "UnityEngine.Video.VideoPlayer"]
+  },
+  {
+    "id": "api-enhancedtouch-members",
+    "question": "In which namespace does EnhancedTouchSupport live, and what are its public static members for turning enhanced touch on and off and checking its state?",
+    "difficulty": "api",
+    "ground_truth": "Namespace UnityEngine.InputSystem.EnhancedTouch. Public static members: Enable(), Disable(), and the bool property enabled.",
+    "evidence": ["unity_docs_6000.3.db api_records"],
+    "unity_apis": ["UnityEngine.InputSystem.EnhancedTouch.EnhancedTouchSupport.Enable", "UnityEngine.InputSystem.EnhancedTouch.EnhancedTouchSupport.Disable", "UnityEngine.InputSystem.EnhancedTouch.EnhancedTouchSupport.enabled"]
+  },
+  {
+    "id": "api-audiosettings-speakermode",
+    "question": "Can you still set UnityEngine.AudioSettings.speakerMode directly in Unity 6? What does the API documentation say about it?",
+    "difficulty": "api",
+    "ground_truth": "AudioSettings.speakerMode is marked deprecated/obsolete; the deprecation hint points to AudioSettings (use AudioSettings.GetConfiguration/Reset with AudioConfiguration.speakerMode instead of setting it directly).",
+    "evidence": ["unity_docs_6000.3.db api_records deprecated=1"],
+    "unity_apis": ["UnityEngine.AudioSettings.speakerMode"]
+  }
+]

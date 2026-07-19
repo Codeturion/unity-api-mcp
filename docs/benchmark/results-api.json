@@ -1,0 +1,1098 @@
+{
+  "api-screenpointtoray-overloads": {
+    "mcp": {
+      "answer": "`UnityEngine.Camera.ScreenPointToRay` has **2 overloads** in Unity 6000.3:\n\n1. `public Ray ScreenPointToRay(Vector3 pos)` \u2014 `pos`: screen-space point (x, y in pixels, z ignored); uses `MonoOrStereoscopicEye.Mono` implicitly.\n2. `public Ray ScreenPointToRay(Vector3 pos, Camera.MonoOrStereoscopicEye eye)` \u2014 same `pos` parameter plus an explicit `eye` parameter (`Camera.MonoOrStereoscopicEye`) to select which stereo eye's transform to use.\n\nBoth return a `UnityEngine.Ray` and live in namespace `UnityEngine` on class `Camera`; overload 1 is effectively the same call with `eye` defaulted to `Mono`.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correctly identifies both overloads with full accurate parameter lists matching ground truth."
+      },
+      "usage": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 22059,
+        "cache_read_input_tokens": 138391,
+        "output_tokens": 675,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 22059,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 291,
+            "cache_read_input_tokens": 43999,
+            "cache_creation_input_tokens": 1197,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1197
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 36581,
+      "session_overhead_tokens": 1199,
+      "research_tokens": 291,
+      "num_turns": 5,
+      "duration_ms": 12822,
+      "cost_usd": 0.18402030000000003
+    },
+    "skilled": {
+      "answer": "`UnityEngine.Camera.ScreenPointToRay` has exactly 2 overloads in Unity 6 (unchanged from prior LTS versions), both instance methods returning `UnityEngine.Ray`:\n\n1. `Ray ScreenPointToRay(Vector3 position)`\n2. `Ray ScreenPointToRay(Vector3 position, Camera.MonoOrStereoscopicEye eye)` \u2014 the second overload adds an eye selector (enum `Camera.MonoOrStereoscopicEye`: `Left`, `Right`, `Mono`) for stereo/XR rendering.\n\nThe project's own `ICameraManager`/`CameraManager` (Assets/<Game>/Scripts/Services/CameraManager.cs:35, ICameraManager.cs:12) only wraps the single-argument overload; I could not find a local decompiled copy of `UnityEngine.CoreModule` in this repo to re-verify signatures against the exact installed Unity 6000.3.2f1 build, so this is based on Unity's documented/known API rather than repo source.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Agent correctly identified both overloads with accurate parameter lists and honestly noted it couldn't verify against local decompiled source."
+      },
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 9731,
+        "cache_read_input_tokens": 55428,
+        "output_tokens": 886,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9731,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 479,
+            "cache_read_input_tokens": 32291,
+            "cache_creation_input_tokens": 577,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 577
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 16163,
+      "session_overhead_tokens": 579,
+      "research_tokens": 479,
+      "num_turns": 2,
+      "duration_ms": 14580,
+      "cost_usd": 0.08831639999999999
+    },
+    "naive": {
+      "answer": "**UnityEngine.Camera.ScreenPointToRay** has 2 overloads (unchanged in Unity 6 from earlier LTS versions):\n\n1. `public Ray ScreenPointToRay(Vector3 position)` \u2014 converts a screen-space point to a ray using the camera's own eye (mono, or the appropriate stereo eye if XR is active).\n2. `public Ray ScreenPointToRay(Vector3 position, Camera.MonoOrStereoscopicEye eye)` \u2014 same, but explicitly specifies which eye to use via the `Camera.MonoOrStereoscopicEye` enum (`Left`, `Right`, `Mono`).\n\nBoth return `UnityEngine.Ray` and take the screen point's z-component ignored (only x/y used) for direction purposes; this is defined in the `UnityEngine` namespace (UnityEngine.CoreModule). I could not verify this against source in this repo since `UnityEngine.Camera` ships as a precompiled engine assembly, not C# source \u2014 this reflects Unity's public scripting API reference for Unity 6.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correctly identifies both overloads with accurate parameter lists and appropriately caveats that it couldn't verify against local source since Camera is a precompiled engine assembly."
+      },
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 9139,
+        "cache_read_input_tokens": 23137,
+        "output_tokens": 710,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9139,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 710,
+            "cache_read_input_tokens": 23137,
+            "cache_creation_input_tokens": 9139,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 9139
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 12164,
+      "session_overhead_tokens": 9141,
+      "research_tokens": 710,
+      "num_turns": 1,
+      "duration_ms": 8688,
+      "cost_usd": 0.0724311
+    }
+  },
+  "api-raycast-ray-full-overload": {
+    "mcp": {
+      "answer": "Found it (Result 11).\n\nThe most complete overload is `UnityEngine.Physics.Raycast(UnityEngine.Ray ray, out UnityEngine.RaycastHit hitInfo, float maxDistance, int layerMask, UnityEngine.QueryTriggerInteraction queryTriggerInteraction)`, a static method on `UnityEngine.Physics` (namespace `UnityEngine`) returning `bool`. Parameters: `ray` (starting point/direction), `hitInfo` (out `RaycastHit`, populated when a collider is hit), `maxDistance` (default 1e38f if omitted), `layerMask` (default `Physics.DefaultRaycastLayers` \u2014 `UnityEngine.Physics.DefaultRaycastLayers` field), and `queryTriggerInteraction` (`UnityEngine.QueryTriggerInteraction`, default `QueryTriggerInteraction.UseGlobal`).",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Signature, parameter names, types, and return type exactly match ground truth."
+      },
+      "usage": {
+        "input_tokens": 12,
+        "cache_creation_input_tokens": 25779,
+        "cache_read_input_tokens": 217999,
+        "output_tokens": 900,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 25779,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 322,
+            "cache_read_input_tokens": 42208,
+            "cache_creation_input_tokens": 6708,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 6708
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 48490,
+      "session_overhead_tokens": 6710,
+      "research_tokens": 322,
+      "num_turns": 6,
+      "duration_ms": 16647,
+      "cost_usd": 0.23360970000000003
+    },
+    "skilled": {
+      "answer": "The codebase itself has no `Physics.Raycast` calls, so this is pure Unity engine API knowledge rather than something verifiable in-repo. The most complete `UnityEngine.Physics.Raycast` overload taking a `Ray` and outputting a `RaycastHit` is:\n\n`public static bool Physics.Raycast(Ray ray, out RaycastHit hitInfo, float maxDistance = Mathf.Infinity, int layerMask = Physics.DefaultRaycastLayers, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)`\n\nIt lives in the `UnityEngine` namespace (`UnityEngine.Physics`, part of the `UnityEngine.PhysicsModule`), returns `bool`, and `RaycastHit` is also `UnityEngine.RaycastHit`. I could not verify this against local source since Physics.Raycast isn't called anywhere in this repo \u2014 this is from Unity's built-in API, not project code.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "The signature, parameter list, defaults, namespace, and return type all match the ground truth Physics.Raycast overload."
+      },
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 9566,
+        "cache_read_input_tokens": 55428,
+        "output_tokens": 748,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9566,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 344,
+            "cache_read_input_tokens": 32291,
+            "cache_creation_input_tokens": 412,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 412
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 15860,
+      "session_overhead_tokens": 414,
+      "research_tokens": 344,
+      "num_turns": 2,
+      "duration_ms": 10679,
+      "cost_usd": 0.0852564
+    },
+    "naive": {
+      "answer": "No usages of `Physics.Raycast` exist in this codebase, so this is answered from the Unity engine API itself (`UnityEngine.Physics`, package `com.unity.modules.physics`, matching the project's Unity 6000.3.2f1 / URP 17.3.0 stack).\n\nThe most complete `Ray`+`RaycastHit`-out overload is:\n\n```csharp\npublic static bool UnityEngine.Physics.Raycast(\n    Ray ray,\n    out RaycastHit hitInfo,\n    float maxDistance = Mathf.Infinity,\n    int layerMask = Physics.DefaultRaycastLayers,\n    QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)\n```\n\nParameters: `ray` (`UnityEngine.Ray`, origin+direction), `hitInfo` (`out UnityEngine.RaycastHit`, populated on hit), `maxDistance` (`float`), `layerMask` (`int` bitmask, default `Physics.DefaultRaycastLayers`), and `queryTriggerInteraction` (`UnityEngine.QueryTriggerInteraction` enum, default `UseGlobal`) \u2014 all defined in `UnityEngine` namespace.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "The overload signature, parameter names, types, and default values all match the verified ground truth exactly."
+      },
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 9944,
+        "cache_read_input_tokens": 55735,
+        "output_tokens": 905,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9944,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 431,
+            "cache_read_input_tokens": 32598,
+            "cache_creation_input_tokens": 483,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 483
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 16426,
+      "session_overhead_tokens": 485,
+      "research_tokens": 431,
+      "num_turns": 2,
+      "duration_ms": 13118,
+      "cost_usd": 0.08997150000000001
+    }
+  },
+  "api-loadsceneasync-overloads": {
+    "mcp": {
+      "answer": "`UnityEngine.SceneManagement.SceneManager.LoadSceneAsync` (namespace `UnityEngine.SceneManagement`) has 4 overloads in Unity 6000.3:\n\n1. `LoadSceneAsync(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)`\n2. `LoadSceneAsync(int sceneBuildIndex, LoadSceneParameters parameters)`\n3. `LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)`\n4. `LoadSceneAsync(string sceneName, LoadSceneParameters parameters)`\n\nAll four return `AsyncOperation`, take either a scene name/path (`string`) or build index (`int`) as the first parameter, and a second parameter that is either `UnityEngine.SceneManagement.LoadSceneMode` or the aggregate `UnityEngine.SceneManagement.LoadSceneParameters` struct.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "All four overloads with correct parameter types match the ground truth, including the commonly missed LoadSceneParameters variants."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 11521,
+        "cache_read_input_tokens": 89005,
+        "output_tokens": 539,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11521,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 345,
+            "cache_read_input_tokens": 33318,
+            "cache_creation_input_tokens": 1340,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1340
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 20966,
+      "session_overhead_tokens": 1342,
+      "research_tokens": 345,
+      "num_turns": 3,
+      "duration_ms": 10216,
+      "cost_usd": 0.10393050000000001
+    },
+    "skilled": {
+      "answer": "This is engine API, not present as source in the project, so I'm answering from Unity's documented (unchanged) API surface rather than local grep of engine internals.\n\n`UnityEngine.SceneManagement.SceneManager.LoadSceneAsync` has six overloads, all returning `UnityEngine.AsyncOperation`:\n\n1. `LoadSceneAsync(string sceneName)`\n2. `LoadSceneAsync(string sceneName, LoadSceneMode mode)`\n3. `LoadSceneAsync(string sceneName, LoadSceneParameters parameters)`\n4. `LoadSceneAsync(int sceneBuildIndex)`\n5. `LoadSceneAsync(int sceneBuildIndex, LoadSceneMode mode)`\n6. `LoadSceneAsync(int sceneBuildIndex, LoadSceneParameters parameters)`\n\n`LoadSceneMode` and `LoadSceneParameters` are both in `UnityEngine.SceneManagement`; `LoadSceneMode` is an enum (`Single`, `Additive`), and `LoadSceneParameters` is a struct wrapping `loadSceneMode` plus `LocalPhysicsMode`. This set has been stable since Unity 5.3 through Unity 6 \u2014 I could not find engine source in this repo to verify directly (it's a closed-source engine API), so this is based on documented/known API surface, not a local grep confirmation.",
+      "verdict": {
+        "verdict": "partial",
+        "hallucinated_api": true,
+        "hallucination_detail": "LoadSceneAsync(string sceneName) and LoadSceneAsync(int sceneBuildIndex) single-parameter overloads do not exist",
+        "reason": "Agent correctly listed the four real overloads including the LoadSceneParameters variants but added two extra single-parameter overloads that don't exist in Unity's actual API surface."
+      },
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 9687,
+        "cache_read_input_tokens": 55427,
+        "output_tokens": 1002,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9687,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 547,
+            "cache_read_input_tokens": 32290,
+            "cache_creation_input_tokens": 534,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 534
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 16235,
+      "session_overhead_tokens": 536,
+      "research_tokens": 547,
+      "num_turns": 2,
+      "duration_ms": 12746,
+      "cost_usd": 0.08979209999999999
+    },
+    "naive": {
+      "answer": "`UnityEngine.SceneManagement.SceneManager.LoadSceneAsync` has four overloads in Unity 6 (all returning `AsyncOperation`):\n\n1. `LoadSceneAsync(string sceneName)`\n2. `LoadSceneAsync(string sceneName, LoadSceneMode mode)`\n3. `LoadSceneAsync(int sceneBuildIndex)`\n4. `LoadSceneAsync(int sceneBuildIndex, LoadSceneMode mode)`\n\nThere are also `LoadSceneAsync(string sceneName, LoadSceneParameters parameters)` and `LoadSceneAsync(int sceneBuildIndex, LoadSceneParameters parameters)` overloads taking a `UnityEngine.SceneManagement.LoadSceneParameters` struct (which bundles `LoadSceneMode` and `LocalPhysicsMode`). This project's own code (`Assets/<Game>/Scripts/Services/SceneService.cs:65,100,126`) only uses the single-`string sceneName` overload.",
+      "verdict": {
+        "verdict": "wrong",
+        "hallucinated_api": true,
+        "hallucination_detail": "LoadSceneAsync(string sceneName) and LoadSceneAsync(int sceneBuildIndex) single-parameter overloads do not exist",
+        "reason": "Agent listed 6 overloads including two non-existent single-parameter signatures not present in the actual API, though it did eventually mention the correct LoadSceneParameters overloads."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 10887,
+        "cache_read_input_tokens": 87981,
+        "output_tokens": 911,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 10887,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 404,
+            "cache_read_input_tokens": 32569,
+            "cache_creation_input_tokens": 1455,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1455
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 20602,
+      "session_overhead_tokens": 1457,
+      "research_tokens": 404,
+      "num_turns": 3,
+      "duration_ms": 13964,
+      "cost_usd": 0.1053993
+    }
+  },
+  "api-screenpoint-rect-params": {
+    "mcp": {
+      "answer": "The static method `UnityEngine.RectTransformUtility.ScreenPointToLocalPointInRectangle` has the signature:\n\n```csharp\npublic static bool ScreenPointToLocalPointInRectangle(\n    RectTransform rect,\n    Vector2 screenPoint,\n    Camera cam,\n    out Vector2 localPoint)\n```\n\nIt returns `bool` (true if the RectTransform's plane is hit, regardless of whether the point falls inside the rectangle's bounds), and the `out Vector2 localPoint` parameter receives the resulting point in the RectTransform's local space. All types (`RectTransform`, `Vector2`, `Camera`) are in the `UnityEngine` namespace.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Signature, parameters, and return semantics all match ground truth exactly."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 10290,
+        "cache_read_input_tokens": 88660,
+        "output_tokens": 421,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 10290,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 239,
+            "cache_read_input_tokens": 32969,
+            "cache_creation_input_tokens": 458,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 458
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 19583,
+      "session_overhead_tokens": 460,
+      "research_tokens": 239,
+      "num_turns": 3,
+      "duration_ms": 8283,
+      "cost_usd": 0.09467099999999999
+    },
+    "skilled": {
+      "answer": "This confirms the call-site usage pattern (rect, screenPoint, cam, out localPoint) matches Unity's documented API, though the engine source itself isn't in this repo (it ships in Unity's compiled `UnityEngine.UIModule`).\n\n**`UnityEngine.RectTransformUtility.ScreenPointToLocalPointInRectangle`** signature:\n\n```csharp\npublic static bool ScreenPointToLocalPointInRectangle(\n    RectTransform rect,\n    Vector2 screenPoint,\n    Camera cam,\n    out Vector2 localPoint\n)\n```\n\nIt's a `static` method on `UnityEngine.RectTransformUtility` (namespace `UnityEngine`), returning `bool` (true if the screen point lies within the rect's plane/behind the camera correctly, false otherwise), with `localPoint` as the `out Vector2` parameter receiving the converted local-space coordinate. This is corroborated by the local call sites in `Assets/<Game>/Scripts/Game/Views/UI/UIConnectionLineView.cs:225` and `:243`, which pass `(_canvasRectTransform, screenPos, cam, out ...)` in that order.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Signature exactly matches ground truth including static modifier, parameter order/types, and bool return type."
+      },
+      "usage": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 11105,
+        "cache_read_input_tokens": 122071,
+        "output_tokens": 1039,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11105,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 402,
+            "cache_read_input_tokens": 33892,
+            "cache_creation_input_tokens": 350,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 350
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 24359,
+      "session_overhead_tokens": 352,
+      "research_tokens": 402,
+      "num_turns": 4,
+      "duration_ms": 16901,
+      "cost_usd": 0.1188603
+    },
+    "naive": {
+      "answer": "The static method is `UnityEngine.RectTransformUtility.ScreenPointToLocalPointInRectangle(RectTransform rect, Vector2 screenPoint, Camera cam, out Vector2 localPoint)`, returning `bool` (true if the point could be converted, false if the screen point is behind the camera). This is confirmed by all call sites in the codebase (e.g. `PowerUpBarView.cs:257`, `UIConnectionLineView.cs:225`), which pass `RectTransform`, `Vector2` screen point, a nullable `Camera`, and an `out Vector2` \u2014 and `PackProgressBarView.cs:720` uses the `bool` return value directly (`return RectTransformUtility.ScreenPointToLocalPointInRectangle(...)`).",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Signature and return type exactly match ground truth, though the return-value explanation ('behind the camera') differs slightly from the official 'plane hit' semantics without being a fabricated API."
+      },
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 10039,
+        "cache_read_input_tokens": 55416,
+        "output_tokens": 449,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 10039,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 264,
+            "cache_read_input_tokens": 32279,
+            "cache_creation_input_tokens": 897,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 897
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 16033,
+      "session_overhead_tokens": 899,
+      "research_tokens": 264,
+      "num_turns": 2,
+      "duration_ms": 7002,
+      "cost_usd": 0.08360580000000001
+    }
+  },
+  "api-audiosource-panlevel-deprecated": {
+    "mcp": {
+      "answer": "`UnityEngine.AudioSource.panLevel` is deprecated and not the recommended API in Unity 6 (6000.3). It's replaced by `UnityEngine.AudioSource.spatialBlend` (a `float` property, 0 = fully 2D, 1 = fully 3D), which controls how much the 3D spatial engine affects the mix. Use `spatialBlend` in any code that previously read/wrote `panLevel`.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "The agent correctly identifies panLevel as deprecated in Unity 6 and names spatialBlend as the accurate replacement, matching ground truth."
+      },
+      "usage": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 11364,
+        "cache_read_input_tokens": 122409,
+        "output_tokens": 413,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11364,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 148,
+            "cache_read_input_tokens": 34322,
+            "cache_creation_input_tokens": 179,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 179
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 24025,
+      "session_overhead_tokens": 181,
+      "research_tokens": 148,
+      "num_turns": 4,
+      "duration_ms": 11743,
+      "cost_usd": 0.11112569999999998
+    },
+    "skilled": {
+      "answer": "No usages of either API in this codebase, so I can only answer from Unity API knowledge, not project code. `UnityEngine.AudioSource.panLevel` is obsolete/removed in modern Unity (including Unity 6) \u2014 it was a legacy 2D/3D pan-blend control marked `[Obsolete]` years ago in favor of `UnityEngine.AudioSource.spatialBlend` (a float 0\u20131 controlling 2D vs 3D mixing). I could not verify the exact Unity 6000.3 API reference directly (no docs access in this session), so confirm against the Unity 6 scripting reference before relying on this if precision matters.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correctly identifies panLevel as obsolete in Unity 6 and names spatialBlend as the replacement, appropriately caveating that it couldn't verify against live docs."
+      },
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 10100,
+        "cache_read_input_tokens": 56179,
+        "output_tokens": 401,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 10100,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 215,
+            "cache_read_input_tokens": 33042,
+            "cache_creation_input_tokens": 195,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 195
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 16122,
+      "session_overhead_tokens": 197,
+      "research_tokens": 215,
+      "num_turns": 2,
+      "duration_ms": 10106,
+      "cost_usd": 0.0834807
+    },
+    "naive": {
+      "answer": "No usages found in this codebase, so I'll answer from Unity API knowledge.\n\n`UnityEngine.AudioSource.panLevel` is obsolete \u2014 it was deprecated back in Unity 5 and is not usable/meaningful in Unity 6 (Unity 6000.3.2f1, the version pinned in this project). It has been replaced by `UnityEngine.AudioSource.spatialBlend` (a float 0\u20131 controlling 2D-to-3D blend), which is the property still used by the current audio engine. I found no references to either property in this codebase (`Assets/the game project`), so there's nothing here currently relying on the obsolete API.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correctly identifies panLevel as obsolete in Unity 6 and names spatialBlend as the real replacement, matching ground truth."
+      },
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 9296,
+        "cache_read_input_tokens": 55401,
+        "output_tokens": 377,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9296,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 217,
+            "cache_read_input_tokens": 32264,
+            "cache_creation_input_tokens": 169,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 169
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 15217,
+      "session_overhead_tokens": 171,
+      "research_tokens": 217,
+      "num_turns": 2,
+      "duration_ms": 8837,
+      "cost_usd": 0.0780633
+    }
+  },
+  "api-movietexture-replacement": {
+    "mcp": {
+      "answer": "`UnityEngine.MovieTexture` has been fully removed in Unity 6 \u2014 it no longer exists as a usable API (it was deprecated/removed starting with Unity 2017). The recommended replacement is `UnityEngine.Video.VideoPlayer` (component-based video playback), which plays a `VideoClip` via its `clip`/`source` properties and exposes methods like `Play()`, `Pause()`, `Stop()` and properties such as `isPlaying`/`isPaused`. Audio can be routed through an `AudioSource` or `VideoAudioOutputMode` on the `VideoPlayer` instead of `MovieTexture.audioClip`.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correctly identifies MovieTexture removal in Unity 6 and VideoPlayer as the replacement, with accurate API details."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 12078,
+        "cache_read_input_tokens": 89242,
+        "output_tokens": 512,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 12078,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 224,
+            "cache_read_input_tokens": 33557,
+            "cache_creation_input_tokens": 1658,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1658
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 21520,
+      "session_overhead_tokens": 1660,
+      "research_tokens": 224,
+      "num_turns": 4,
+      "duration_ms": 8218,
+      "cost_usd": 0.1069386
+    },
+    "skilled": {
+      "answer": "No file in this codebase references `MovieTexture` \u2014 I searched the full repo and found zero matches, so I can't point to the \"legacy script\" mentioned.\n\nFor the general question: `UnityEngine.MovieTexture` was removed from Unity years ago (deprecated since ~5.6, gone by 2017.x); it does not exist in Unity 6. The recommended replacement is `UnityEngine.Video.VideoPlayer` (namespace `UnityEngine.Video`), typically paired with a `RenderTexture` target and `VideoPlayer.url`/`VideoPlayer.clip` + `VideoPlayer.prepareCompleted`/`VideoPlayer.loopPointReached` events for playback control.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Agent correctly identifies MovieTexture as removed in Unity 6 and VideoPlayer as the accurate replacement API, with all named members (url, clip, prepareCompleted, loopPointReached) being real."
+      },
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 9260,
+        "cache_read_input_tokens": 55425,
+        "output_tokens": 341,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9260,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 239,
+            "cache_read_input_tokens": 32288,
+            "cache_creation_input_tokens": 109,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 109
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 15147,
+      "session_overhead_tokens": 111,
+      "research_tokens": 239,
+      "num_turns": 2,
+      "duration_ms": 7214,
+      "cost_usd": 0.0773145
+    },
+    "naive": {
+      "answer": "No file in this codebase references `MovieTexture` (searched entire repo \u2014 zero matches).\n\n`UnityEngine.MovieTexture` was removed from Unity long before Unity 6 (deprecated in 5.6, fully removed in 2017.x for most platforms) \u2014 it does not exist in Unity 6000.3.2f1. The recommended replacement is `UnityEngine.Video.VideoPlayer` (namespace `UnityEngine.Video`), which plays video onto a `RenderTexture` or directly to a Camera/UI target via `VideoPlayer.targetTexture` / `VideoPlayer.renderMode`, with playback controlled through `VideoPlayer.Play()`, `Pause()`, `Stop()` and events like `VideoPlayer.loopPointReached`. I could not verify any legacy `MovieTexture` usage in this repo, so if a specific file was reported, it isn't present in the current codebase state.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correctly states MovieTexture no longer exists in Unity 6 and recommends the real VideoPlayer API with accurate members."
+      },
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 9245,
+        "cache_read_input_tokens": 55410,
+        "output_tokens": 447,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9245,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 345,
+            "cache_read_input_tokens": 32273,
+            "cache_creation_input_tokens": 109,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 109
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 15237,
+      "session_overhead_tokens": 111,
+      "research_tokens": 345,
+      "num_turns": 2,
+      "duration_ms": 8873,
+      "cost_usd": 0.07881
+    }
+  },
+  "api-enhancedtouch-members": {
+    "mcp": {
+      "answer": "`EnhancedTouchSupport` lives in `UnityEngine.InputSystem.EnhancedTouch`. It exposes three public static members: `EnhancedTouchSupport.Enable()` to turn enhanced touch on, `EnhancedTouchSupport.Disable()` to turn it off, and the static bool property `EnhancedTouchSupport.enabled` to check its current state.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Namespace and all three static members (Enable, Disable, enabled) match the ground truth exactly."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 10382,
+        "cache_read_input_tokens": 88916,
+        "output_tokens": 309,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 10382,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 133,
+            "cache_read_input_tokens": 33233,
+            "cache_creation_input_tokens": 286,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 286
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 19588,
+      "session_overhead_tokens": 288,
+      "research_tokens": 133,
+      "num_turns": 3,
+      "duration_ms": 7926,
+      "cost_usd": 0.0936198
+    },
+    "skilled": {
+      "answer": "`EnhancedTouchSupport` lives in `UnityEngine.InputSystem.EnhancedTouch` (the Enhanced Touch Support namespace of the Input System package), used in `InputController.cs:58-60`. Its public static members are `bool enabled { get; }` for checking state, and `Enable()` / `Disable()` static methods for turning it on/off \u2014 the codebase calls `EnhancedTouchSupport.Enable()` guarded by `!EnhancedTouchSupport.enabled`.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Namespace and all three members (Enable, Disable, enabled) match ground truth exactly."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 10519,
+        "cache_read_input_tokens": 87947,
+        "output_tokens": 464,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 10519,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 172,
+            "cache_read_input_tokens": 32524,
+            "cache_creation_input_tokens": 1132,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1132
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 19783,
+      "session_overhead_tokens": 1134,
+      "research_tokens": 172,
+      "num_turns": 3,
+      "duration_ms": 9797,
+      "cost_usd": 0.09647610000000001
+    },
+    "naive": {
+      "answer": "`EnhancedTouchSupport` lives in `UnityEngine.InputSystem.EnhancedTouch` (used in `Assets/<Game>/Scripts/Game/Controllers/InputController.cs:4,58,60`, part of Unity's Input System package, not the game project's own code). It's enabled via the public static method `EnhancedTouchSupport.Enable()`, disabled via `EnhancedTouchSupport.Disable()` (not called in this codebase, but part of the API), and its current state is read via the public static property `EnhancedTouchSupport.enabled` \u2014 as seen in `InputController.Initialize()`, which guards the call with `if (!EnhancedTouchSupport.enabled) EnhancedTouchSupport.Enable();`.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Correctly identifies the namespace and all three public static members (Enable, Disable, enabled) matching ground truth."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 11707,
+        "cache_read_input_tokens": 87927,
+        "output_tokens": 546,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11707,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 260,
+            "cache_read_input_tokens": 32519,
+            "cache_creation_input_tokens": 2325,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2325
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 21051,
+      "session_overhead_tokens": 2327,
+      "research_tokens": 260,
+      "num_turns": 3,
+      "duration_ms": 11095,
+      "cost_usd": 0.10482809999999998
+    }
+  },
+  "api-audiosettings-speakermode": {
+    "mcp": {
+      "answer": "`UnityEngine.AudioSettings.speakerMode` still compiles and exists in Unity 6000.3, but it is marked **[DEPRECATED]**. The API docs state: \"AudioSettings.speakerMode is deprecated. Use AudioSettings.GetConfiguration and AudioSettings.Reset to adjust audio settings instead.\" So the recommended path is to read the current config with `UnityEngine.AudioSettings.GetConfiguration()`, modify the returned `UnityEngine.AudioConfiguration` struct's `speakerMode` field, and apply it via `UnityEngine.AudioSettings.Reset(AudioConfiguration)` rather than setting the property directly.",
+      "verdict": {
+        "verdict": "correct",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Agent correctly identifies speakerMode as deprecated and accurately describes the recommended GetConfiguration/Reset workaround using real, existing Unity APIs."
+      },
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 11220,
+        "cache_read_input_tokens": 89170,
+        "output_tokens": 505,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11220,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 236,
+            "cache_read_input_tokens": 33487,
+            "cache_creation_input_tokens": 870,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 870
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 20648,
+      "session_overhead_tokens": 872,
+      "research_tokens": 236,
+      "num_turns": 4,
+      "duration_ms": 9882,
+      "cost_usd": 0.101664
+    },
+    "skilled": {
+      "answer": "No usage of `AudioSettings.speakerMode` exists in this codebase (confirmed via grep \u2014 zero matches), so this is a pure engine-API question, not something specific to the game project.\n\nPer Unity's scripting API docs, `UnityEngine.AudioSettings.speakerMode` (a static property on `UnityEngine.AudioSettings`, namespace `UnityEngine`) still has a public setter in Unity 6 \u2014 it has not been made read-only or deprecated. The docs note that assigning to it internally triggers a full audio system reset (equivalent to calling `AudioSettings.Reset` with a modified `AudioConfiguration`), which will interrupt/stop any currently playing audio, and that this reset behavior/support can vary by platform. I could not verify from local sources whether Unity 6000.3.2f1 specifically added any additional platform restrictions beyond what's stated in the general docs \u2014 if that matters, checking the Unity 6000.3 online API reference page for `AudioSettings.speakerMode` directly would confirm.",
+      "verdict": {
+        "verdict": "wrong",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "The agent claims speakerMode still has a public, non-deprecated setter, directly contradicting the ground truth that it is deprecated/obsolete with a hint to use AudioConfiguration via GetConfiguration/Reset."
+      },
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 9326,
+        "cache_read_input_tokens": 55423,
+        "output_tokens": 927,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 9326,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 2,
+            "output_tokens": 758,
+            "cache_read_input_tokens": 32286,
+            "cache_creation_input_tokens": 177,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 177
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 15799,
+      "session_overhead_tokens": 179,
+      "research_tokens": 758,
+      "num_turns": 2,
+      "duration_ms": 13039,
+      "cost_usd": 0.08649989999999999
+    },
+    "naive": {
+      "answer": "No Unity Editor installation or bundled ScriptReference/source found on this machine (checked `/Applications/Unity/Hub/Editor` and common paths), and the the game project codebase itself has zero references to `UnityEngine.AudioSettings` anywhere in `Assets/`. I cannot verify this from local files.\n\nBased on documented Unity behavior (not verified against local sources here): `UnityEngine.AudioSettings.speakerMode` (property, `AudioSpeakerMode` type, `UnityEngine.Audio`/`UnityEngine` core module) is a **getter-only at runtime in the sense that Unity's docs mark it deprecated for direct setting** \u2014 you're supposed to call `AudioSettings.Reset(AudioConfiguration)` instead, passing a modified `AudioConfiguration` struct with the desired `speakerMode`. This has been true since Unity 5.x and remains the documented pattern in Unity 6; I could not confirm from local files whether the setter still compiles (it's historically been kept for backward compatibility but is documented as not doing anything useful without a `Reset` call). Recommend checking Unity's official Scripting API page directly if precision matters, since I have no local docs or a reachable Unity install to confirm the exact current wording.",
+      "verdict": {
+        "verdict": "partial",
+        "hallucinated_api": false,
+        "hallucination_detail": "",
+        "reason": "Agent correctly conveyed the gist (deprecated, use AudioConfiguration/Reset instead) but failed to verify via the actual unity-api-mcp tool/database and gave a hedged, imprecise answer instead of citing the real deprecation hint pointing to AudioSettings.GetConfiguration/Reset."
+      },
+      "usage": {
+        "input_tokens": 53,
+        "cache_creation_input_tokens": 11084,
+        "cache_read_input_tokens": 121979,
+        "output_tokens": 1293,
+        "server_tool_use": {
+          "web_search_requests": 0,
+          "web_fetch_requests": 0
+        },
+        "service_tier": "standard",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": 11084,
+          "ephemeral_5m_input_tokens": 0
+        },
+        "inference_geo": "not_available",
+        "iterations": [
+          {
+            "input_tokens": 47,
+            "output_tokens": 425,
+            "cache_read_input_tokens": 33889,
+            "cache_creation_input_tokens": 332,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 332
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "standard"
+      },
+      "billed_tokens": 24627,
+      "session_overhead_tokens": 379,
+      "research_tokens": 425,
+      "num_turns": 7,
+      "duration_ms": 23012,
+      "cost_usd": 0.12265169999999999
+    }
+  }
+}
