@@ -28,10 +28,13 @@ _SEARCH_ROOTS = {
 }
 
 # Relative paths from Unity install root to the Managed XML docs
-# (Windows/Linux layout first, then the macOS .app bundle layout)
+# (Windows/Linux layout first, then the macOS .app bundle layouts —
+# 6000.3+ moved them under Resources/Scripting; older streams like
+# 6000.0/6000.2 keep them directly under Contents/Managed)
 _MANAGED_REL_CANDIDATES = (
     Path("Editor/Data/Managed"),
     Path("Unity.app/Contents/Resources/Scripting/Managed"),
+    Path("Unity.app/Contents/Managed"),
 )
 
 
