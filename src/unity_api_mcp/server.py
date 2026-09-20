@@ -3,7 +3,10 @@
 import json
 import sys
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.mcpserver import MCPServer
+except ModuleNotFoundError:
+    from mcp.server.fastmcp import FastMCP as MCPServer
 
 from . import db
 from .version import detect_version, ensure_db
@@ -11,7 +14,7 @@ from .version import detect_version, ensure_db
 _unity_version = detect_version()
 print(f"unity-api-mcp: serving Unity {_unity_version} API docs", file=sys.stderr)
 
-mcp = FastMCP(
+mcp = MCPServer(
     "unity-api",
     instructions=(
         f"Unity {_unity_version} API documentation server. When writing Unity API calls, "
