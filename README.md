@@ -240,6 +240,7 @@ Databases are stored in `~/.unity-api-mcp/` (downloaded on first run).
 | "Could not download Unity X database" | Check internet connection. Or build locally: `python -m unity_api_mcp.ingest --unity-version 2022` |
 | Wrong API version being served | Set `UNITY_VERSION` explicitly. Check stderr: `unity-api-mcp: serving Unity <version> API docs` |
 | Server won't start | Check `python --version` (needs 3.10+). Check path: `which unity-api-mcp` or `where unity-api-mcp` |
+| `ModuleNotFoundError: No module named 'mcp.server.fastmcp'` | Version 2.1.0 or older installed mcp 2.x. Restart your MCP client, or run `uvx unity-api-mcp@latest`. With pip, run `pip install -U unity-api-mcp`. |
 | Third-party packages return no results | DOTween, VContainer, Newtonsoft.Json are not indexed (third-party, not Unity packages) |
 
 ---
