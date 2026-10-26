@@ -22,6 +22,11 @@ on:
         required: false
         type: boolean
         default: false
+      issue:
+        description: "Summary issue number from the detect workflow. Closed when all its versions are built."
+        required: false
+        type: string
+        default: ""
 
 jobs:
   build:
@@ -29,6 +34,7 @@ jobs:
     timeout-minutes: 120
     permissions:
       contents: write
+      issues: write
     env:
       UNITY_VERSION_IN: ${{ inputs.unity_version }}
       CHANGESET_IN: ${{ inputs.changeset }}
@@ -206,6 +212,32 @@ jobs:
           Unity 6 databases are rebuilt automatically when new patches ship (weekly detection). _Last update: $updated_on_
           EOF
           )"
+
+      - name: Close summary issue when all versions are built
+        if: inputs.issue != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE: ${{ inputs.issue }}
+        run: |
+          state=$(gh issue view "$ISSUE" --json state -q .state)
+          [ "$state" = "OPEN" ] || { echo "Issue #$ISSUE is $state"; exit 0; }
+
+          versions=$(gh issue view "$ISSUE" --json body -q .body \
+            | grep -oE '^- `6000\.[0-9]+\.[0-9]+f[0-9]+`$' | tr -d '`- ')
+
+          for v in $versions; do
+            minor=$(echo "$v" | grep -oE '^6000\.[0-9]+')
+            built=$(gh release download db-v1 --pattern "built-${minor}.txt" --output - 2>/dev/null || echo "none")
+            newest=$(printf '%s\n%s\n' "$v" "$built" | sort -V | tail -1)
+            if [ "$built" = "none" ] || [ "$newest" != "$built" ]; then
+              echo "$v is not built yet (built-${minor}.txt: $built). Issue #$ISSUE stays open."
+              exit 0
+            fi
+          done
+
+          gh issue close "$ISSUE" --reason completed --comment \
+            "All versions in this issue are built and in the \`db-v1\` release. Closed by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            || true
 
       - name: Uninstall temp editor
         if: always() && steps.editor.outputs.installed_by_job == 'true'

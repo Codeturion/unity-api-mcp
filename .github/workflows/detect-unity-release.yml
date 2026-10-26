@@ -44,6 +44,7 @@ jobs:
           echo "Default LTS stream: $default_lts"
 
           new_builds=""
+          builds=""
           for minor in $(echo "$active" | grep -oE '^6000\.[0-9]+' | sort -Vu); do
             # Latest patch for this minor (API is release-date ordered)
             line=$(echo "$active" | awk -v m="$minor." 'index($1, m) == 1 {print; exit}')
@@ -56,24 +57,23 @@ jobs:
             if [ "$built" = "$version" ]; then
               echo "  $minor: OK (built $built)"
             else
-              echo "  $minor: NEW $version (built: $built) -- triggering build"
+              echo "  $minor: NEW $version (built: $built)"
               is_default="false"
               [ "$minor" = "$default_lts" ] && is_default="true"
-              gh workflow run build-db.yml \
-                -f unity_version="$version" \
-                -f changeset="$changeset" \
-                -f minor="$minor" \
-                -f is_default_lts="$is_default"
+              builds="$builds$version $changeset $minor $is_default
+          "
               new_builds="$new_builds $version"
             fi
           done
 
+          # Create a single summary issue, then trigger the builds.
+          # Each build closes the issue when all listed versions are in db-v1.
           if [ -n "$new_builds" ]; then
             version_list=$(echo "$new_builds" | tr ' ' '\n' | sed '/^$/d' | sort -V)
             count=$(echo "$version_list" | wc -l)
             formatted=$(echo "$version_list" | sed 's/^/- `/' | sed 's/$/`/')
 
-            gh issue create \
+            issue_url=$(gh issue create \
               --title "Auto-building $count new Unity database(s)" \
               --body "$(cat <<EOF
           The weekly detect workflow found new Unity versions without databases.
@@ -85,9 +85,23 @@ jobs:
           **What to check after builds complete:**
           - Confirm updated \`.db\` files in the \`db-v1\` release
           - Spot-check record counts in the build logs
+
+          This issue closes automatically when every version above is in \`db-v1\`.
           EOF
-            )"
-            echo "Created summary issue for $count new version(s)"
+            )") || issue_url=""
+            issue="${issue_url##*/}"
+            echo "Summary issue: ${issue_url:-none (create failed)}"
+
+            echo "$builds" | while read -r version changeset minor is_default; do
+              [ -n "$version" ] || continue
+              echo "  $version: triggering build"
+              gh workflow run build-db.yml \
+                -f unity_version="$version" \
+                -f changeset="$changeset" \
+                -f minor="$minor" \
+                -f is_default_lts="$is_default" \
+                -f issue="$issue"
+            done
           else
             echo "No new versions found."
           fi
